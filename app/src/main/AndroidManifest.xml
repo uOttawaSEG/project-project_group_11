@@ -13,9 +13,7 @@
         android:theme="@style/Theme.Projectproject_group_11">
         <activity
             android:name=".MainActivity"
-            android:exported="true"
-            android:label="@string/app_name"
-            android:theme="@style/Theme.Projectproject_group_11">
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
