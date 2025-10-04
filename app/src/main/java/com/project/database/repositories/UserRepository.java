@@ -12,23 +12,23 @@ public class UserRepository {d
     private static final String TAG = "UserRepository";
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-    public Task<DocumentReference> addUser(User user) { // task to register new user, gives path to new user
-        return db.collection("users").add(user)
+    public Task<Void> createUserProfile(String userId, User user) {
+        return db.collection("users").document(userId).set(user) // link firebase auth uid to a user document
                 .addOnSuccessListener(doc ->
-                        Log.d(TAG, "User added with ID: " + doc.getId()))
+                        Log.d(TAG, "User added with ID: " + userId))
                 .addOnFailureListener(e ->
-                        Log.w(TAG, "Error adding user", e));
+                        Log.w(TAG, "Error creating profile", e));
     }
 
-    public Task<QuerySnapshot> getAllUsers() {
-        return db.collection("users").get();
+    public Task<DocumentSnapshot> getUserProfile(String userId) {
+        return db.collection("users").document(userId).get();
     }
 
-    public Task<QuerySnapshot> loginCheck(String email, String password) { // does account exist already
-        return db.collection("users")
-                .whereEqualTo("email", email)
-                .whereEqualTo("password", password)
-                .get();
+    public Task<Void> updateUserProfile(String userId) {
+        return db.collection("users").document(userId).set(user);
+    }
 
+    public Task<Void> deleteUserProfile(String userId) {
+        return db.collection("users").document(userId).delete();
     }
 }
