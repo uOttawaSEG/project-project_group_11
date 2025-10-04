@@ -6,9 +6,10 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.project.backend.User;
 
-public class UserRepository {d
+public class UserRepository {
     private static final String TAG = "UserRepository";
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -24,7 +25,7 @@ public class UserRepository {d
         return db.collection("users").document(userId).get();
     }
 
-    public Task<Void> updateUserProfile(String userId) {
+    public Task<Void> updateUserProfile(String userId, User user) {
         return db.collection("users").document(userId).set(user);
     }
 
