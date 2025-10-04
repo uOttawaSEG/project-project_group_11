@@ -6,9 +6,9 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.project.backend.models.User;
+import com.project.backend.User;
 
-public class UserRepository {
+public class UserRepository {d
     private static final String TAG = "UserRepository";
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
