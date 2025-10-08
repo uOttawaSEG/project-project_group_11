@@ -31,7 +31,7 @@ public class LoginActivity extends AppCompatActivity {
 
         loginButton.setOnClickListener(view -> { // login button
 
-                loginButton.setEnabled(false);
+                loginButton.setEnabled(false); // disable to stop lots of clicking
 
                 // convert editable text objects to strings
                 String email = emailField.getText().toString();
@@ -43,33 +43,33 @@ public class LoginActivity extends AppCompatActivity {
                     return;
                 }
 
-                FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password) // Task operation to sign in user
-                        .addOnSuccessListener(result -> {
+                FirebaseAuth.getInstance().signInWithEmailAndPassword(email.trim(), password.trim()) // Task operation to sign in user
+                        .addOnSuccessListener(result -> { // runs if auth succeeds, then user is signed in
 
-                            String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                            String uid = FirebaseAuth.getInstance().getCurrentUser().getUid(); // retrieves signed-in user's uid
 
                             UserRepository userRepository = new UserRepository();
 
-                            userRepository.getUserProfile(uid)
+                            userRepository.getUserProfile(uid) // async firestore read of /users/uid
                                     .addOnSuccessListener(snapshot -> {
-                                        if (snapshot.exists()) {
+                                        if (snapshot.exists()) { // checks if user profile document exists, a document in firestore is like a row in sql i think
                                             User currentUser = snapshot.toObject(User.class);
                                             // add toasts for feedback
-                                            startActivity(new Intent(LoginActivity.this, HomepageActivity.class));
-                                            finish();
+                                            startActivity(new Intent(LoginActivity.this, HomepageActivity.class)); // navigate to home creen
+                                            finish(); // closes login so cant go back without signing out
                                         }
-                                        else {
+                                        else { // document not found for uid
                                             Toast.makeText(LoginActivity.this, "Profile not found in database", Toast.LENGTH_SHORT).show();
                                         }
                                         loginButton.setEnabled(true);
                                     })
-                                    .addOnFailureListener(error -> {
+                                    .addOnFailureListener(error -> { // firestore read failed
                                         Log.w("Firestore", "Failed to fetch user profile", error);
                                         Toast.makeText(LoginActivity.this, "Error loading profile", Toast.LENGTH_SHORT).show();
                                         loginButton.setEnabled(true);
                                     });
                         })
-                        .addOnFailureListener(error -> {
+                        .addOnFailureListener(error -> { // auth failed (bad password, no user etc.)
                             Log.w("Auth", "Login failed", error);
                             loginButton.setEnabled(true);
                         });

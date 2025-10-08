@@ -25,6 +25,12 @@
         <activity
             android:name=".frontend.LoginActivity"
             android:exported="false" />
+        <activity
+            android:name=".frontend.RegisterActivity"
+            android:exported="false" />
+        <activity
+            android:name=".frontend.HomepageActivity"
+            android:exported="false" />
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
