@@ -59,6 +59,14 @@ public class RegisterActivity extends AppCompatActivity {
             // exterior success/fail: for auth being created (email,password)
             // interior success/fail: for firestore profile being saved (other user data stored in database)
 
+            // to do:
+            // add password eye button
+            // add password requirements and live checking
+            // add more toasts for scenarios like wrong password
+            // more testing and ensuring stuff doesnt break
+            // better ui
+            // home page and logout functionality
+
             FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password) // Task operation to create an auth account for email/password (uid)
                     .addOnSuccessListener(result -> { // runs if auth successfully created account
                         String uid = result.getUser().getUid(); // gets new users uid, it will be used as firestore document id
