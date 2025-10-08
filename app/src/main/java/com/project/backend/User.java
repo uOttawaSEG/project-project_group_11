@@ -6,15 +6,17 @@ public class User {
     private String lastName;
     private String email;
     private String phoneNumber;
+    private String program;
     private String role;
 
     public User() {} // no arg constructor needed for firebase
 
-    public User(String firstName, String lastName, String email, String phoneNumber, String role) {
+    public User(String firstName, String lastName, String email, String phoneNumber, String program, String role) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.phoneNumber = phoneNumber;
+        this.program = program;
         this.role = role;
     }
 
@@ -24,6 +26,7 @@ public class User {
     public String getLastName() { return lastName; }
     public String getEmail() { return email; }
     public String getPhoneNumber() { return phoneNumber; }
+    public String getProgram() { return program; }
     public String getRole() { return role; }
 
     // setters
@@ -33,5 +36,6 @@ public class User {
     public void setLastName(String lastName) { this.lastName = lastName; }
     public void setEmail(String email) { this.email = email; }
     public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
+    public void setProgram(String program) { this.program = program; }
     public void setRole(String role) { this.role = role; }
 }

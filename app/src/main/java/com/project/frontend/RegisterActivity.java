@@ -12,6 +12,8 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.button.MaterialButtonToggleGroup;
 import com.google.firebase.auth.FirebaseAuth;
 import com.project.R;
+import com.project.backend.User;
+import com.project.database.repositories.UserRepository;
 
 public class RegisterActivity extends AppCompatActivity {
     @Override
@@ -46,14 +48,26 @@ public class RegisterActivity extends AppCompatActivity {
             FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password) // Task operation to create a uid
                     .addOnSuccessListener(result -> {
                         String uid = result.getUser().getUid();
+
+                        User newUser = new User(firstName, lastName, email, phoneNumber, program, role);
+                        newUser.setUserId(uid);
+
+                        UserRepository userRepository = new UserRepository();
+                        userRepository.createUserProfile(uid, newUser)
+                                .addOnSuccessListener(task -> {
+                                    startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
+                                    finish();
+                                })
+                                .addOnFailureListener(error -> {
+
+                        });
+
                         accountCreated.setEnabled(true);
                     })
                     .addOnFailureListener(error -> {
                         Log.w("error", error);
                         accountCreated.setEnabled(true);
                     });
-
-            startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
         });
     }
 }
