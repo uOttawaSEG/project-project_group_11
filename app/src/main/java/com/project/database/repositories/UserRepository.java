@@ -10,7 +10,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.project.backend.User;
 
 public class UserRepository {
-    private static final String TAG = "UserRepository";
+    private static final String TAG = "UserRepository"; // tag for debugging
     private final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     public Task<Void> createUserProfile(String userId, User user) {

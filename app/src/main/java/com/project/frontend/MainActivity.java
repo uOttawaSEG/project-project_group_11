@@ -1,6 +1,9 @@
 package com.project.frontend;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,5 +25,13 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() { // handler to schedule work done on main ui thread
+            public void run() { // postDelayed to wait some ms, Runnable is the code block to run later, inside run defines the code to run
+                startActivity(new Intent(MainActivity.this, LoginActivity.class)); // start login screen after initial splash screen
+                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out); // fade animation for splash screen to login
+                finish(); // close initial splash screen (MainActivity) so you can't go back to it
+            }
+        }, 3000); // 3 second wait time
     }
 }

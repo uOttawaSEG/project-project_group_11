@@ -5,96 +5,19 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:backgroundTint="#101010"
-    tools:context=".MainActivity">
+    tools:context=".frontend.MainActivity">
 
     <TextView
-        android:id="@+id/textView2"
-        android:layout_width="240dp"
-        android:layout_height="63dp"
+        android:id="@+id/textView4"
+        android:layout_width="204dp"
+        android:layout_height="108dp"
         android:layout_marginStart="85dp"
-        android:layout_marginTop="132dp"
+        android:layout_marginTop="300dp"
         android:layout_marginEnd="86dp"
         android:fontFamily="@font/alata"
-        android:text="Welcome back!"
-        android:textSize="34sp"
+        android:text="OTAMS"
+        android:textSize="60sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <EditText
-        android:id="@+id/editTextTextEmailAddress"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="104dp"
-        android:layout_marginTop="198dp"
-        android:layout_marginEnd="98dp"
-        android:layout_marginBottom="7dp"
-        android:background="@android:drawable/edit_text"
-        android:ems="10"
-        android:hint="email"
-        android:inputType="textEmailAddress"
-        android:padding="12dp"
-        app:layout_constraintBottom_toTopOf="@+id/editTextTextPassword"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView2" />
-
-    <EditText
-        android:id="@+id/editTextTextPassword"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="104dp"
-        android:layout_marginTop="7dp"
-        android:layout_marginEnd="97dp"
-        android:background="@android:drawable/edit_text"
-        android:ems="10"
-        android:hint="password"
-        android:inputType="textPassword"
-        android:padding="12dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextEmailAddress" />
-
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="200dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="160dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="161dp"
-        android:backgroundTint="#0707A4"
-        android:text="Login"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextPassword" />
-
-    <Button
-        android:id="@+id/button7"
-        android:layout_width="200dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="160dp"
-        android:layout_marginTop="104dp"
-        android:layout_marginEnd="161dp"
-        android:layout_marginBottom="83dp"
-        android:backgroundTint="#7166CE"
-        android:text="Create Account"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextPassword" />
-
-    <TextView
-        android:id="@+id/textView3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="198dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="199dp"
-        android:layout_marginBottom="11dp"
-        android:text="Or"
-        app:layout_constraintBottom_toTopOf="@+id/button7"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button2" />
 </androidx.constraintlayout.widget.ConstraintLayout>
