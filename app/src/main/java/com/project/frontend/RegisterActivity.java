@@ -59,28 +59,28 @@ public class RegisterActivity extends AppCompatActivity {
             // exterior success/fail: for auth being created (email,password)
             // interior success/fail: for firestore profile being saved (other user data stored in database)
 
-            FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password) // Task operation to create a uid
-                    .addOnSuccessListener(result -> {
-                        String uid = result.getUser().getUid();
+            FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password) // Task operation to create an auth account for email/password (uid)
+                    .addOnSuccessListener(result -> { // runs if auth successfully created account
+                        String uid = result.getUser().getUid(); // gets new users uid, it will be used as firestore document id
 
-                        User newUser = new User(firstName, lastName, email, phoneNumber, program, role);
-                        newUser.setUserId(uid);
+                        User newUser = new User(firstName, lastName, email, phoneNumber, program, role); // create profile object
+                        newUser.setUserId(uid); // stores uid inside model
 
-                        UserRepository userRepository = new UserRepository();
-                        userRepository.createUserProfile(uid, newUser)
-                                .addOnSuccessListener(task -> {
-                                    startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
-                                    finish();
+                        UserRepository userRepository = new UserRepository(); // helper
+                        userRepository.createUserProfile(uid, newUser) // create profile with uid and user model
+                                .addOnSuccessListener(task -> { // runs when firestore writes the porifle
+                                    startActivity(new Intent(RegisterActivity.this, LoginActivity.class)); // goes to login page
+                                    finish(); // close registration
                                     accountCreated.setEnabled(true);
                                 })
-                                .addOnFailureListener(error -> {
+                                .addOnFailureListener(error -> { // if firestore fails write
                                     Log.w("Firestore", "Error creating profile", error);
                                     Toast.makeText(RegisterActivity.this, "Error creating profile", Toast.LENGTH_SHORT).show();
                                     accountCreated.setEnabled(true);
                         });
                     })
                     .addOnFailureListener(error -> {
-                        Log.w("Auth", "User creation failed", error);
+                        Log.w("Auth", "User creation failed", error); // if auth creation fails (later implement weak password stuff or dupe emails)
                         Toast.makeText(RegisterActivity.this, "Registration failed", Toast.LENGTH_SHORT).show();
                         passwordField.setText(""); // clear password text if failed
                         accountCreated.setEnabled(true);
