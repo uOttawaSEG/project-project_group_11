@@ -22,15 +22,15 @@ public class LoginActivity extends AppCompatActivity {
         Button loginButton = findViewById(R.id.button2);
         Button createAccountButton = findViewById(R.id.button7);
 
-        loginButton.setOnClickListener(view -> {
+        loginButton.setOnClickListener(view -> { // login button
 
                 // convert editable text objects to strings
-                String emailInput = emailField.getText().toString();
-                String passwordInput = passwordField.getText().toString();
+                String email = emailField.getText().toString();
+                String password = passwordField.getText().toString();
         });
 
-        createAccountButton.setOnClickListener(view -> {
-            startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
+        createAccountButton.setOnClickListener(view -> { // create account button
+            startActivity(new Intent(LoginActivity.this, RegisterActivity.class)); // go to register
         });
 
     }
