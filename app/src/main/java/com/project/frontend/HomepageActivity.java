@@ -2,6 +2,7 @@ package com.project.frontend;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,5 +23,16 @@ public class HomepageActivity extends AppCompatActivity {
         // update homepage text
         TextView welcomeTextView = findViewById(R.id.homepageTextView);
         welcomeTextView.setText("Welcome! You are logged in as " + user.getRole());
+
+        // logout just sends us back to the main activity
+        Button logoutButton = findViewById(R.id.homepageLogoutButton);
+
+        logoutButton.setOnClickListener(view -> {
+            Intent logoutIntent = new Intent(HomepageActivity.this, MainActivity.class);
+
+            startActivity(logoutIntent);
+
+            finish();
+        });
     }
 }
