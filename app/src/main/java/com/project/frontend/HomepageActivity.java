@@ -7,6 +7,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.project.R;
 import com.project.backend.User;
 
@@ -28,8 +29,9 @@ public class HomepageActivity extends AppCompatActivity {
         Button logoutButton = findViewById(R.id.homepageLogoutButton);
 
         logoutButton.setOnClickListener(view -> {
-            Intent logoutIntent = new Intent(HomepageActivity.this, MainActivity.class);
+            FirebaseAuth.getInstance().signOut();
 
+            Intent logoutIntent = new Intent(HomepageActivity.this, MainActivity.class);
             startActivity(logoutIntent);
 
             finish();
