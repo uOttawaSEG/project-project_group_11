@@ -1,6 +1,8 @@
 package com.project.backend;
 
-public class User {
+import java.io.Serializable;
+
+public class User implements Serializable {
     private String userId; // firebase auth uid
     private String firstName;
     private String lastName;

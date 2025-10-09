@@ -62,8 +62,12 @@ public class LoginActivity extends AppCompatActivity {
                                     .addOnSuccessListener(snapshot -> { // runs if firestore stuff succeeds
                                         if (snapshot.exists()) { // checks if user profile document exists, a document in firestore is like a row in sql i think
                                             User currentUser = snapshot.toObject(User.class);
-                                            // add toasts for feedback
-                                            startActivity(new Intent(LoginActivity.this, HomepageActivity.class)); // navigate to home creen
+
+                                            Intent homepageIntent = new Intent(LoginActivity.this, HomepageActivity.class);
+                                            homepageIntent.putExtra("userInfo", currentUser);
+
+                                            startActivity(homepageIntent);
+
                                             finish(); // closes login so cant go back without signing out
                                         }
                                         else { // document not found for uid
