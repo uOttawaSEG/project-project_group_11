@@ -44,11 +44,69 @@ public class RegisterActivity extends AppCompatActivity {
             String password = passwordField.getText().toString().trim();
             String phoneNumber = phoneNumberField.getText().toString().trim();
             String program = programField.getText().toString().trim();
+
             String role = ((MaterialButton) findViewById(roleSelect.getCheckedButtonId())).getText().toString(); // get id of selected button (student or tutor), cast to MaterialButton, then get text
 
-            if (firstName.isEmpty() || lastName.isEmpty() || email.isEmpty() || password.isEmpty()
-                    || phoneNumber.isEmpty() || program.isEmpty() || role.isEmpty()) {
-                Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show(); // small popup at bottom of screen
+            // validate first name
+            if (firstName.isEmpty()) {
+                firstNameField.setError("First name is required");
+                accountCreated.setEnabled(true); // this is the create account button btw
+                return;
+            }
+
+            // validate last name
+            if (lastName.isEmpty()) {
+                lastNameField.setError("Last name is required");
+                accountCreated.setEnabled(true);
+                return;
+            }
+
+            // validate email
+            if (email.isEmpty()) {
+                emailField.setError("Email is required");
+                accountCreated.setEnabled(true);
+                return;
+            }
+            if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                emailField.setError("Please enter a valid email address");
+                accountCreated.setEnabled(true);
+                return;
+            }
+
+            // validate password
+            if (password.isEmpty()) {
+                passwordField.setError("Password is required");
+                accountCreated.setEnabled(true);
+                return;
+            }
+            if (password.length() < 6) {
+                passwordField.setError("Password must be at least 6 characters");
+                accountCreated.setEnabled(true);
+                return;
+            }
+
+            // validate phone number
+            if (phoneNumber.isEmpty()) {
+                phoneNumberField.setError("Phone number is required");
+                accountCreated.setEnabled(true);
+                return;
+            }
+            if (!phoneNumber.matches("\\d{10}")) {
+                phoneNumberField.setError("Please enter a valid 10-digit phone number");
+                accountCreated.setEnabled(true);
+                return;
+            }
+
+            // validate program
+            if (program.isEmpty()) {
+                programField.setError("Program is required");
+                accountCreated.setEnabled(true);
+                return;
+            }
+
+            // validate role selection
+            if (roleSelect.getCheckedButtonId() == View.NO_ID) {
+                Toast.makeText(this, "Please select a role (Student or Tutor)", Toast.LENGTH_SHORT).show();
                 accountCreated.setEnabled(true);
                 return;
             }
@@ -58,14 +116,6 @@ public class RegisterActivity extends AppCompatActivity {
 
             // exterior success/fail: for auth being created (email,password)
             // interior success/fail: for firestore profile being saved (other user data stored in database)
-
-            // to do:
-            // add password eye button
-            // add password requirements and live checking
-            // add more toasts for scenarios like wrong password
-            // more testing and ensuring stuff doesnt break
-            // better ui
-            // home page and logout functionality
 
             FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password) // Task operation to create an auth account for email/password (uid)
                     .addOnSuccessListener(result -> { // runs if auth successfully created account

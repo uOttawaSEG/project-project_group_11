@@ -38,8 +38,23 @@ public class LoginActivity extends AppCompatActivity {
                 String email = emailField.getText().toString().trim();
                 String password = passwordField.getText().toString().trim();
 
-                if (email.isEmpty() || password.isEmpty()) {
-                    Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show(); // small popup at bottom of screen
+                // validate email
+                if (email.isEmpty()) {
+                    emailField.setError("Email is required");
+                    loginButton.setEnabled(true);
+                    createAccountButton.setEnabled(true);
+                    return;
+                }
+                if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                    emailField.setError("Please enter a valid email address");
+                    loginButton.setEnabled(true);
+                    createAccountButton.setEnabled(true);
+                    return;
+                }
+
+                // validate password
+                if (password.isEmpty()) {
+                    passwordField.setError("Password is required");
                     loginButton.setEnabled(true);
                     createAccountButton.setEnabled(true);
                     return;
