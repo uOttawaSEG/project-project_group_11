@@ -16,3 +16,6 @@ Password:
 ## Team Members
 Jakob Dubeau - 300442742  
 Dominick Serwe -   
+
+## Demo Videos
+Demo 1: https://youtu.be/dHSVx8-iDt8
