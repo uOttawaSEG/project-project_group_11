@@ -10,12 +10,12 @@ appointment scheduling at the University of Ottawa Help Centre.
 - All info stored in a database
 
 ## Admin Credentials
-Email: test@account.com
+Email: test@account.com  
 Password: password
 
 ## Team Members
 Jakob Dubeau - 300442742  
-Dominick Serwe -   
+Dominick Serwe - 300237698  
 
 ## Demo Videos
 Demo 1: https://youtu.be/dHSVx8-iDt8
