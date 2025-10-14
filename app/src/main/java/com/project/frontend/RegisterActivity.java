@@ -14,6 +14,8 @@ import com.google.android.material.button.MaterialButtonToggleGroup;
 import com.google.firebase.auth.FirebaseAuth;
 import com.project.R;
 import com.project.backend.User;
+import com.project.backend.Student;
+import com.project.backend.Tutor;
 import com.project.database.repositories.UserRepository;
 
 public class RegisterActivity extends AppCompatActivity {
@@ -30,9 +32,30 @@ public class RegisterActivity extends AppCompatActivity {
         EditText passwordField = findViewById(R.id.editTextTextPassword2);
         EditText phoneNumberField = findViewById(R.id.editTextText6);
         EditText programField = findViewById(R.id.editTextText7);
+        EditText coursesOfferedField = findViewById(R.id.editTextCoursesOffered);
         MaterialButtonToggleGroup roleSelect = findViewById(R.id.roleToggleGroup);
 
         Button accountCreated = findViewById(R.id.button3);
+
+        // show/hide courses offered field based on role selection
+        roleSelect.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
+            if (checkedId == R.id.buttonTutor && isChecked) {
+                coursesOfferedField.setAlpha(0f);
+                coursesOfferedField.setVisibility(View.VISIBLE);
+                coursesOfferedField.animate()
+                        .alpha(1f)
+                        .setDuration(300)
+                        .setListener(null);
+            } else if (checkedId == R.id.buttonStudent && isChecked) {
+                coursesOfferedField.animate()
+                        .alpha(0f)
+                        .setDuration(300)
+                        .withEndAction(() -> {
+                            coursesOfferedField.setVisibility(View.INVISIBLE);
+                            coursesOfferedField.setText("");
+                        });
+            }
+        });
 
         accountCreated.setOnClickListener(view -> { // for future this is a lambda expression
 
@@ -44,6 +67,7 @@ public class RegisterActivity extends AppCompatActivity {
             String password = passwordField.getText().toString().trim();
             String phoneNumber = phoneNumberField.getText().toString().trim();
             String program = programField.getText().toString().trim();
+            String coursesOffered = coursesOfferedField.getText().toString().trim();
 
             String role = ((MaterialButton) findViewById(roleSelect.getCheckedButtonId())).getText().toString(); // get id of selected button (student or tutor), cast to MaterialButton, then get text
 
@@ -111,6 +135,13 @@ public class RegisterActivity extends AppCompatActivity {
                 return;
             }
 
+            // validate courses offered for tutors
+            if (role.equals("Tutor") && coursesOffered.isEmpty()) {
+                coursesOfferedField.setError("Courses offered is required for tutors, please select one or more");
+                accountCreated.setEnabled(true);
+                return;
+            }
+
             // the reason that we need success and failure things is cause the methods that use them call Tasks, these tasks return a background task, and don't start immediately
             // so once the task finishes, either the success or failure code runs
 
@@ -121,7 +152,12 @@ public class RegisterActivity extends AppCompatActivity {
                     .addOnSuccessListener(result -> { // runs if auth successfully created account
                         String uid = result.getUser().getUid(); // gets new users uid, it will be used as firestore document id
 
-                        User newUser = new User(firstName, lastName, email, phoneNumber, program, role); // create profile object
+                        User newUser; // create profile object
+                        if (role.equals("Tutor")) {
+                            newUser = new Tutor(firstName, lastName, email, phoneNumber, program, coursesOffered);
+                        } else {
+                            newUser = new Student(firstName, lastName, email, phoneNumber, program);
+                        }
                         newUser.setUserId(uid); // stores uid inside model
 
                         UserRepository userRepository = new UserRepository(); // helper
