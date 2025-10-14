@@ -9,6 +9,9 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.Arrays;
+import java.util.List;
+
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.button.MaterialButtonToggleGroup;
 import com.google.firebase.auth.FirebaseAuth;
@@ -71,6 +74,13 @@ public class RegisterActivity extends AppCompatActivity {
 
             String role = ((MaterialButton) findViewById(roleSelect.getCheckedButtonId())).getText().toString(); // get id of selected button (student or tutor), cast to MaterialButton, then get text
 
+            // quick initial check
+            if (firstName.isEmpty() && lastName.isEmpty() && email.isEmpty() && password.isEmpty()
+                && phoneNumber.isEmpty() && program.isEmpty() && roleSelect.getCheckedButtonId() == View.NO_ID) {
+                Toast.makeText(this, "Please enter all fields", Toast.LENGTH_SHORT).show();
+                accountCreated.setEnabled(true);
+                return;
+            }
             // validate first name
             if (firstName.isEmpty()) {
                 firstNameField.setError("First name is required");
@@ -154,7 +164,8 @@ public class RegisterActivity extends AppCompatActivity {
 
                         User newUser; // create profile object
                         if (role.equals("Tutor")) {
-                            newUser = new Tutor(firstName, lastName, email, phoneNumber, program, coursesOffered);
+                            List<String> courses = Arrays.asList(coursesOffered.split(","));
+                            newUser = new Tutor(firstName, lastName, email, phoneNumber, program, courses);
                         } else {
                             newUser = new Student(firstName, lastName, email, phoneNumber, program);
                         }

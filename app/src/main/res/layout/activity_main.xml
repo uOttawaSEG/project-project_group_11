@@ -9,11 +9,9 @@
 
     <TextView
         android:id="@+id/textView4"
-        android:layout_width="204dp"
-        android:layout_height="108dp"
-        android:layout_marginStart="85dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginTop="300dp"
-        android:layout_marginEnd="86dp"
         android:fontFamily="@font/alata"
         android:text="OTAMS"
         android:textSize="60sp"

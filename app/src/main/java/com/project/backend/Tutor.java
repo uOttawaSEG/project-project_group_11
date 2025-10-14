@@ -1,24 +1,26 @@
 package com.project.backend;
 
+import java.util.List;
+
 public class Tutor extends User {
-    private String coursesOffered;
+    private List<String> coursesOffered;
 
     public Tutor() {
         super(); // no arg constructor needed for firebase
     }
 
-    public Tutor(String firstName, String lastName, String email, String phoneNumber, String program, String coursesOffered) {
+    public Tutor(String firstName, String lastName, String email, String phoneNumber, String program, List<String> coursesOffered) {
         super(firstName, lastName, email, phoneNumber, program, "Tutor");
         this.coursesOffered = coursesOffered;
     }
 
     // getters
-    public String getCoursesOffered() {
+    public List<String> getCoursesOffered() {
         return coursesOffered;
     }
 
     // setters
-    public void setCoursesOffered(String coursesOffered) {
+    public void setCoursesOffered(List<String> coursesOffered) {
         this.coursesOffered = coursesOffered;
     }
 }

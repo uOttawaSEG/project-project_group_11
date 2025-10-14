@@ -129,7 +129,7 @@
         android:layout_marginEnd="101dp"
         android:background="@android:drawable/edit_text"
         android:ems="10"
-        android:hint="Courses Offered"
+        android:hint="Courses Offered (separated by commas)"
         android:inputType="text"
         android:padding="12dp"
         android:visibility="invisible"
