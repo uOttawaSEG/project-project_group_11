@@ -173,7 +173,7 @@ public class RegisterActivity extends AppCompatActivity {
 
                         UserRepository userRepository = new UserRepository(); // helper
                         userRepository.createUserProfile(uid, newUser) // create profile with uid and user model
-                                .addOnSuccessListener(task -> { // runs when firestore writes the porifle
+                                .addOnSuccessListener(task -> { // runs when firestore writes the profile
                                     startActivity(new Intent(RegisterActivity.this, LoginActivity.class)); // goes to login page
                                     finish(); // close registration
                                     accountCreated.setEnabled(true);
