@@ -28,6 +28,11 @@ public class HomepageActivity extends AppCompatActivity {
         ImageButton settingsButton = findViewById(R.id.settingsButton);
         ImageButton inboxButton = findViewById(R.id.inboxButton);
 
+        // hide inbox button unless user is admin
+        if (!user.getRole().equalsIgnoreCase("Admin")) {
+            inboxButton.setVisibility(View.GONE);
+        }
+
         // determine user role to know what to display in settings
         LinearLayout settingsPanel = findViewById(R.id.settingsPanel);
         settingsPanel.removeAllViews(); // clear old views
