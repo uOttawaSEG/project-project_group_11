@@ -113,10 +113,31 @@ public class LoginActivity extends AppCompatActivity {
                                                 createAccountButton.setEnabled(true);
                                             }
                                         } else {
-                                            // request not found
-                                            Toast.makeText(LoginActivity.this, "Registration request not found", Toast.LENGTH_SHORT).show();
-                                            loginButton.setEnabled(true);
-                                            createAccountButton.setEnabled(true);
+                                            // request not found, assume old user created before approval system
+                                            UserRepository userRepository = new UserRepository();
+                                            userRepository.getUserProfile(uid)
+                                                    .addOnSuccessListener(userSnapshot -> {
+                                                        if (userSnapshot.exists()) {
+                                                            User currentUser = userSnapshot.toObject(User.class);
+
+                                                            Intent homepageIntent = new Intent(LoginActivity.this, HomepageActivity.class);
+                                                            homepageIntent.putExtra("userInfo", currentUser);
+
+                                                            startActivity(homepageIntent);
+
+                                                            finish(); // closes login so cant go back without signing out
+                                                        } else {
+                                                            Toast.makeText(LoginActivity.this, "Profile not found in database", Toast.LENGTH_SHORT).show();
+                                                        }
+                                                        loginButton.setEnabled(true);
+                                                        createAccountButton.setEnabled(true);
+                                                    })
+                                                    .addOnFailureListener(error -> {
+                                                        Log.w("Firestore", "Failed to fetch user profile", error);
+                                                        Toast.makeText(LoginActivity.this, "Error loading profile", Toast.LENGTH_SHORT).show();
+                                                        loginButton.setEnabled(true);
+                                                        createAccountButton.setEnabled(true);
+                                                    });
                                         }
                                     })
                                     .addOnFailureListener(error -> { // firestore read failed

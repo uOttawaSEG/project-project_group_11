@@ -79,7 +79,7 @@ public class HomepageActivity extends AppCompatActivity {
         logout.setOnClickListener(view -> {
             FirebaseAuth.getInstance().signOut();
 
-            Intent logoutIntent = new Intent(HomepageActivity.this, MainActivity.class);
+            Intent logoutIntent = new Intent(HomepageActivity.this, LoginActivity.class);
             startActivity(logoutIntent);
 
             finish();
