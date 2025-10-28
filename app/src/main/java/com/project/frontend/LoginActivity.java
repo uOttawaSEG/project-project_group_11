@@ -103,7 +103,7 @@ public class LoginActivity extends AppCompatActivity {
                                                         });
                                             } else if (status.equals("rejected")) {
                                                 // registration was rejected
-                                                Toast.makeText(LoginActivity.this, "Your registration was rejected. Please contact admin at 613-555-0100", Toast.LENGTH_LONG).show();
+                                                Toast.makeText(LoginActivity.this, "Your registration was rejected. Please contact admin at 613-111-1111", Toast.LENGTH_LONG).show();
                                                 loginButton.setEnabled(true);
                                                 createAccountButton.setEnabled(true);
                                             } else if (status.equals("pending")) {
