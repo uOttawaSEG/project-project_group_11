@@ -9,7 +9,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.project.R;
 import com.project.backend.User;
+import com.project.backend.RegistrationRequest;
 import com.project.database.repositories.UserRepository;
+import com.project.database.repositories.RegistrationRequestRepository;
 import com.google.firebase.firestore.DocumentSnapshot;
 import android.widget.Toast;
 
@@ -60,40 +62,66 @@ public class LoginActivity extends AppCompatActivity {
                     return;
                 }
 
-                // the reason that we need success and failure things is cause the methods that use them call Tasks, these tasks return a background task, and don't start immediately
-                // so once the task finishes, either the success or failure code runs
-
-                // exterior success/fail: for auth (email,password)
-                // interior success/fail: for firestore (other user data stored in database)
-
                 FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password) // Task operation to sign in user
                         .addOnSuccessListener(result -> { // runs if auth succeeds, then user is signed in
 
                             String uid = FirebaseAuth.getInstance().getCurrentUser().getUid(); // retrieves signed-in user's uid
 
-                            UserRepository userRepository = new UserRepository();
+                            RegistrationRequestRepository requestRepository = new RegistrationRequestRepository();
 
-                            userRepository.getUserProfile(uid) // async firestore read of /users/uid
-                                    .addOnSuccessListener(snapshot -> { // runs if firestore stuff succeeds
-                                        if (snapshot.exists()) { // checks if user profile document exists, a document in firestore is like a row in sql i think
-                                            User currentUser = snapshot.toObject(User.class);
+                            requestRepository.getRequest(uid) // check registration request status first
+                                    .addOnSuccessListener(snapshot -> {
+                                        if (snapshot.exists()) {
+                                            RegistrationRequest request = snapshot.toObject(RegistrationRequest.class);
+                                            String status = request.getStatus();
 
-                                            Intent homepageIntent = new Intent(LoginActivity.this, HomepageActivity.class);
-                                            homepageIntent.putExtra("userInfo", currentUser);
+                                            if (status.equals("approved")) {
+                                                // user is approved, proceed to get user profile and go to homepage
+                                                UserRepository userRepository = new UserRepository();
+                                                userRepository.getUserProfile(uid)
+                                                        .addOnSuccessListener(userSnapshot -> {
+                                                            if (userSnapshot.exists()) {
+                                                                User currentUser = userSnapshot.toObject(User.class);
 
-                                            startActivity(homepageIntent);
+                                                                Intent homepageIntent = new Intent(LoginActivity.this, HomepageActivity.class);
+                                                                homepageIntent.putExtra("userInfo", currentUser);
 
-                                            finish(); // closes login so cant go back without signing out
+                                                                startActivity(homepageIntent);
+
+                                                                finish(); // closes login so cant go back without signing out
+                                                            } else {
+                                                                Toast.makeText(LoginActivity.this, "Profile not found in database", Toast.LENGTH_SHORT).show();
+                                                            }
+                                                            loginButton.setEnabled(true);
+                                                            createAccountButton.setEnabled(true);
+                                                        })
+                                                        .addOnFailureListener(error -> {
+                                                            Log.w("Firestore", "Failed to fetch user profile", error);
+                                                            Toast.makeText(LoginActivity.this, "Error loading profile", Toast.LENGTH_SHORT).show();
+                                                            loginButton.setEnabled(true);
+                                                            createAccountButton.setEnabled(true);
+                                                        });
+                                            } else if (status.equals("rejected")) {
+                                                // registration was rejected
+                                                Toast.makeText(LoginActivity.this, "Your registration was rejected. Please contact admin at 613-555-0100", Toast.LENGTH_LONG).show();
+                                                loginButton.setEnabled(true);
+                                                createAccountButton.setEnabled(true);
+                                            } else if (status.equals("pending")) {
+                                                // registration is pending approval
+                                                Toast.makeText(LoginActivity.this, "Your registration is awaiting administrator approval", Toast.LENGTH_LONG).show();
+                                                loginButton.setEnabled(true);
+                                                createAccountButton.setEnabled(true);
+                                            }
+                                        } else {
+                                            // request not found
+                                            Toast.makeText(LoginActivity.this, "Registration request not found", Toast.LENGTH_SHORT).show();
+                                            loginButton.setEnabled(true);
+                                            createAccountButton.setEnabled(true);
                                         }
-                                        else { // document not found for uid
-                                            Toast.makeText(LoginActivity.this, "Profile not found in database", Toast.LENGTH_SHORT).show();
-                                        }
-                                        loginButton.setEnabled(true);
-                                        createAccountButton.setEnabled(true);
                                     })
                                     .addOnFailureListener(error -> { // firestore read failed
-                                        Log.w("Firestore", "Failed to fetch user profile", error);
-                                        Toast.makeText(LoginActivity.this, "Error loading profile", Toast.LENGTH_SHORT).show();
+                                        Log.w("Firestore", "Failed to fetch registration request", error);
+                                        Toast.makeText(LoginActivity.this, "Error checking registration status", Toast.LENGTH_SHORT).show();
                                         loginButton.setEnabled(true);
                                         createAccountButton.setEnabled(true);
                                     });
