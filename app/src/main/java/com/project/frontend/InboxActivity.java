@@ -30,13 +30,13 @@ public class InboxActivity extends AppCompatActivity {
         LinearLayout container = findViewById(R.id.requestsContainer);
         RegistrationRequestRepository requestRepository = new RegistrationRequestRepository();
 
-        // fetch all requests from firestore
-        requestRepository.getAllRequests()
+        // fetch only pending requests from firestore
+        requestRepository.getRequestsByStatus("pending")
                 .addOnSuccessListener(querySnapshot -> {
                     if (querySnapshot.isEmpty()) {
-                        // no requests found
+                        // no pending requests found
                         TextView emptyText = new TextView(InboxActivity.this);
-                        emptyText.setText("No registration requests");
+                        emptyText.setText("No pending registration requests");
                         emptyText.setTextSize(16);
                         emptyText.setPadding(16, 16, 16, 16);
                         container.addView(emptyText);
