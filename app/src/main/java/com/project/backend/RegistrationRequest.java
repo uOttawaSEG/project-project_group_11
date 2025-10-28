@@ -53,4 +53,16 @@ public class RegistrationRequest implements Serializable {
     public void setCoursesOffered(List<String> coursesOffered) { this.coursesOffered = coursesOffered; }
     public void setStatus(String status) { this.status = status; }
     public void setTimestamp(long timestamp) { this.timestamp = timestamp; }
+
+    // convert registration request to user object
+    public User toUser() {
+        User user;
+        if (role.equals("Tutor")) {
+            user = new Tutor(firstName, lastName, email, phoneNumber, program, coursesOffered);
+        } else {
+            user = new Student(firstName, lastName, email, phoneNumber, program);
+        }
+        user.setUserId(userId);
+        return user;
+    }
 }

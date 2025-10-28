@@ -19,7 +19,9 @@ import com.project.R;
 import com.project.backend.User;
 import com.project.backend.Student;
 import com.project.backend.Tutor;
+import com.project.backend.RegistrationRequest;
 import com.project.database.repositories.UserRepository;
+import com.project.database.repositories.RegistrationRequestRepository;
 
 public class RegisterActivity extends AppCompatActivity {
     @Override
@@ -162,25 +164,27 @@ public class RegisterActivity extends AppCompatActivity {
                     .addOnSuccessListener(result -> { // runs if auth successfully created account
                         String uid = result.getUser().getUid(); // gets new users uid, it will be used as firestore document id
 
-                        User newUser; // create profile object
+                        // create registration request object
+                        List<String> courses = null;
                         if (role.equals("Tutor")) {
-                            List<String> courses = Arrays.asList(coursesOffered.split(","));
-                            newUser = new Tutor(firstName, lastName, email, phoneNumber, program, courses);
-                        } else {
-                            newUser = new Student(firstName, lastName, email, phoneNumber, program);
+                            courses = Arrays.asList(coursesOffered.split(","));
                         }
-                        newUser.setUserId(uid); // stores uid inside model
 
-                        UserRepository userRepository = new UserRepository(); // helper
-                        userRepository.createUserProfile(uid, newUser) // create profile with uid and user model
-                                .addOnSuccessListener(task -> { // runs when firestore writes the profile
+                        RegistrationRequest request = new RegistrationRequest(
+                                uid, firstName, lastName, email, phoneNumber, program, role, courses, "pending", System.currentTimeMillis()
+                        );
+
+                        RegistrationRequestRepository requestRepository = new RegistrationRequestRepository(); // helper
+                        requestRepository.createRequest(request) // create request with uid and request model
+                                .addOnSuccessListener(task -> { // runs when firestore writes the request
+                                    Toast.makeText(RegisterActivity.this, "Registration submitted. Awaiting administrator approval.", Toast.LENGTH_LONG).show();
                                     startActivity(new Intent(RegisterActivity.this, LoginActivity.class)); // goes to login page
                                     finish(); // close registration
                                     accountCreated.setEnabled(true);
                                 })
                                 .addOnFailureListener(error -> { // if firestore fails write
-                                    Log.w("Firestore", "Error creating profile", error);
-                                    Toast.makeText(RegisterActivity.this, "Error creating profile", Toast.LENGTH_SHORT).show();
+                                    Log.w("Firestore", "Error creating registration request", error);
+                                    Toast.makeText(RegisterActivity.this, "Error submitting registration", Toast.LENGTH_SHORT).show();
                                     accountCreated.setEnabled(true);
                         });
                     })
