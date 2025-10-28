@@ -31,6 +31,16 @@
         <activity
             android:name=".frontend.HomepageActivity"
             android:exported="false" />
+        <activity
+            android:name=".frontend.InboxActivity"
+            android:exported="false"
+            android:label="Registration Requests"
+            android:parentActivityName=".frontend.HomepageActivity" />
+        <activity
+            android:name=".frontend.RejectedRequestsActivity"
+            android:exported="false"
+            android:label="Rejected Requests"
+            android:parentActivityName=".frontend.HomepageActivity" />
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />

@@ -63,7 +63,11 @@ public class HomepageActivity extends AppCompatActivity {
 
         if (user.getRole().equalsIgnoreCase("Admin")) {
             Button requests = new Button(HomepageActivity.this);
-            requests.setText("Requests");
+            requests.setText("Rejected Requests");
+            requests.setOnClickListener(v -> {
+                Intent requestsIntent = new Intent(HomepageActivity.this, RejectedRequestsActivity.class);
+                startActivity(requestsIntent);
+            });
             settingsPanel.addView(requests);
 
         }
@@ -92,7 +96,7 @@ public class HomepageActivity extends AppCompatActivity {
 
         inboxButton.setOnClickListener(v -> {
             Intent inboxIntent = new Intent(HomepageActivity.this, InboxActivity.class);
-            startActivity(intent);
+            startActivity(inboxIntent);
         });
     }
 }
