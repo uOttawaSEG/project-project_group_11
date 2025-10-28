@@ -26,6 +26,7 @@ public class HomepageActivity extends AppCompatActivity {
         User user     = (User)intent.getSerializableExtra("userInfo");
 
         ImageButton settingsButton = findViewById(R.id.settingsButton);
+        ImageButton inboxButton = findViewById(R.id.inboxButton);
 
         // determine user role to know what to display in settings
         LinearLayout settingsPanel = findViewById(R.id.settingsPanel);
@@ -82,6 +83,11 @@ public class HomepageActivity extends AppCompatActivity {
             startActivity(logoutIntent);
 
             finish();
+        });
+
+        inboxButton.setOnClickListener(v -> {
+            Intent inboxIntent = new Intent(HomepageActivity.this, InboxActivity.class);
+            startActivity(intent);
         });
     }
 }
