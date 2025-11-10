@@ -1,9 +1,9 @@
-package com.project.frontend;
+package com.project.ui.activities;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ImageButton;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -12,14 +12,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.project.R;
-import com.project.backend.RegistrationRequest;
-import com.project.database.repositories.RegistrationRequestRepository;
+import com.project.data.model.RegistrationRequest;
+import com.project.data.repositories.RegistrationRequestRepository;
 
-public class InboxActivity extends AppCompatActivity {
+public class RejectedRequestsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_inbox);
+        setContentView(R.layout.activity_rejected_requests);
 
         // set up toolbar with back button
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -27,27 +27,27 @@ public class InboxActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbar.setNavigationOnClickListener(v -> finish());
 
-        LinearLayout container = findViewById(R.id.requestsContainer);
+        LinearLayout container = findViewById(R.id.rejectedRequestsContainer);
         RegistrationRequestRepository requestRepository = new RegistrationRequestRepository();
 
-        // fetch only pending requests from firestore
-        requestRepository.getRequestsByStatus("pending")
+        // fetch only rejected requests from firestore
+        requestRepository.getRequestsByStatus("rejected")
                 .addOnSuccessListener(querySnapshot -> {
                     if (querySnapshot.isEmpty()) {
-                        // no pending requests found
-                        TextView emptyText = new TextView(InboxActivity.this);
-                        emptyText.setText("No pending registration requests");
+                        // no rejected requests found
+                        TextView emptyText = new TextView(RejectedRequestsActivity.this);
+                        emptyText.setText("No rejected requests");
                         emptyText.setTextSize(16);
                         emptyText.setPadding(16, 16, 16, 16);
                         container.addView(emptyText);
                     } else {
-                        // for each request, create a card
+                        // for each rejected request, create a card
                         for (com.google.firebase.firestore.DocumentSnapshot doc : querySnapshot.getDocuments()) {
                             RegistrationRequest request = doc.toObject(RegistrationRequest.class);
 
                             // inflate the card layout
-                            View card = LayoutInflater.from(InboxActivity.this)
-                                    .inflate(R.layout.item_request_card, container, false);
+                            View card = LayoutInflater.from(RejectedRequestsActivity.this)
+                                    .inflate(R.layout.item_rejected_request_card, container, false);
 
                             // set name and role
                             TextView nameRole = card.findViewById(R.id.nameRole);
@@ -81,28 +81,15 @@ public class InboxActivity extends AppCompatActivity {
                             });
 
                             // approve button
-                            ImageButton approveButton = card.findViewById(R.id.approveButton);
+                            Button approveButton = card.findViewById(R.id.approveButton);
                             approveButton.setOnClickListener(v -> {
                                 requestRepository.approveAndMoveToUsers(request.getUserId())
                                         .addOnSuccessListener(result -> {
-                                            Toast.makeText(InboxActivity.this, "Request approved", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(RejectedRequestsActivity.this, "Request approved", Toast.LENGTH_SHORT).show();
                                             container.removeView(card);
                                         })
                                         .addOnFailureListener(error -> {
-                                            Toast.makeText(InboxActivity.this, "Error approving request", Toast.LENGTH_SHORT).show();
-                                        });
-                            });
-
-                            // reject button
-                            ImageButton rejectButton = card.findViewById(R.id.rejectButton);
-                            rejectButton.setOnClickListener(v -> {
-                                requestRepository.updateRequestStatus(request.getUserId(), "rejected")
-                                        .addOnSuccessListener(result -> {
-                                            Toast.makeText(InboxActivity.this, "Request rejected", Toast.LENGTH_SHORT).show();
-                                            container.removeView(card);
-                                        })
-                                        .addOnFailureListener(error -> {
-                                            Toast.makeText(InboxActivity.this, "Error rejecting request", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(RejectedRequestsActivity.this, "Error approving request", Toast.LENGTH_SHORT).show();
                                         });
                             });
 
@@ -111,7 +98,7 @@ public class InboxActivity extends AppCompatActivity {
                     }
                 })
                 .addOnFailureListener(error -> {
-                    Toast.makeText(InboxActivity.this, "Error loading requests", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(RejectedRequestsActivity.this, "Error loading rejected requests", Toast.LENGTH_SHORT).show();
                 });
     }
 }

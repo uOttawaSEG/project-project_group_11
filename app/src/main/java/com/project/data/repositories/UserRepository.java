@@ -1,17 +1,16 @@
-package com.project.database.repositories;
+package com.project.data.repositories;
 
 import android.util.Log;
 
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.project.backend.User;
+import com.project.data.model.User;
 
 public class UserRepository {
 
-    // firebase auth is for email/password security
-    // firestore is database for all extra details (name, phone, role etc.)
-    private static final String TAG = "UserRepository"; // tag for logcat
+    private static final String TAG = "UserRepository";
+
     private final FirebaseFirestore db = FirebaseFirestore.getInstance(); // firestore instance
 
     public Task<Void> createUserProfile(String userId, User user) {

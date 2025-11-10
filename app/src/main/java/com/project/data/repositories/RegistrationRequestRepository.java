@@ -1,4 +1,4 @@
-package com.project.database.repositories;
+package com.project.data.repositories;
 
 import android.util.Log;
 
@@ -6,8 +6,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.project.backend.RegistrationRequest;
-import com.project.backend.User;
+import com.project.data.model.RegistrationRequest;
+import com.project.data.model.User;
 
 public class RegistrationRequestRepository {
 

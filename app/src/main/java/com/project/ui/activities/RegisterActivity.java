@@ -1,4 +1,4 @@
-package com.project.frontend;
+package com.project.ui.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,12 +16,8 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.button.MaterialButtonToggleGroup;
 import com.google.firebase.auth.FirebaseAuth;
 import com.project.R;
-import com.project.backend.User;
-import com.project.backend.Student;
-import com.project.backend.Tutor;
-import com.project.backend.RegistrationRequest;
-import com.project.database.repositories.UserRepository;
-import com.project.database.repositories.RegistrationRequestRepository;
+import com.project.data.model.RegistrationRequest;
+import com.project.data.repositories.RegistrationRequestRepository;
 
 public class RegisterActivity extends AppCompatActivity {
     @Override

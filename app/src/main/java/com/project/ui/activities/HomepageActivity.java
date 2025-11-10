@@ -1,4 +1,4 @@
-package com.project.frontend;
+package com.project.ui.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,7 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.project.R;
-import com.project.backend.User;
+import com.project.data.model.User;
 
 import android.widget.LinearLayout;
 

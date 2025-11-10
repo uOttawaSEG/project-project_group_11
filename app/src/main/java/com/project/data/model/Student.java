@@ -1,4 +1,4 @@
-package com.project.backend;
+package com.project.data.model;
 
 public class Student extends User {
 
