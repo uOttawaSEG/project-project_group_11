@@ -6,9 +6,12 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.project.backend.App;
 import com.project.backend.LoginResult;
 import com.project.data.model.RegistrationRequest;
 import com.project.data.model.User;
@@ -16,6 +19,8 @@ import com.project.data.repositories.RegistrationRequestRepository;
 import com.project.data.repositories.UserRepository;
 
 public class LoginViewModel extends ViewModel {
+
+    private final App app = App.getInstance();
 
     // database stuff
     private final FirebaseAuth auth = FirebaseAuth.getInstance();
@@ -25,9 +30,10 @@ public class LoginViewModel extends ViewModel {
     // observable data
     private final MutableLiveData<LoginResult> loginResult = new MutableLiveData<>();
 
+    // other data
     private String userID;
 
-    public void signIn(String email, String password) {
+    public void signInUser(String email, String password) {
         auth.signInWithEmailAndPassword(email, password)
                 .addOnSuccessListener(this::onAuthSuccess)
                 .addOnFailureListener(this::onAuthFailure);
