@@ -1,25 +1,30 @@
 package com.project.data.model;
 
 import java.io.Serializable;
+import java.util.Date;
 
 public class SessionRequest implements Serializable {
     private String sessionID;
     private String tutorID;
     private String studentID;
-    private String slotID;
+    private String courseName;
+    private Date startDate;
+    private Date endDate;
     private String status;
 
     public SessionRequest() {}
 
-    public SessionRequest(String sessionID, String tutorID, String studentID, String slotID, String status) {
+    public SessionRequest(String sessionID, String tutorID, String studentID, String courseName, Date startDate, Date endDate, String status) {
         this.sessionID = sessionID;
         this.tutorID = tutorID;
         this.studentID = studentID;
-        this.slotID = slotID;
+        this.courseName = courseName;
+        this.startDate = startDate;
+        this.endDate = endDate;
         this.status = status;
     }
 
-    // getters
+
     public String getSessionID() {
         return sessionID;
     }
@@ -32,15 +37,22 @@ public class SessionRequest implements Serializable {
         return studentID;
     }
 
-    public String getSlotID() {
-        return slotID;
+    public String getCourseName() {
+        return courseName;
+    }
+
+    public Date getStartDate() {
+        return startDate;
+    }
+
+    public Date getEndDate() {
+        return endDate;
     }
 
     public String getStatus() {
         return status;
     }
 
-    // setters
     public void setSessionID(String sessionID) {
         this.sessionID = sessionID;
     }
@@ -53,11 +65,19 @@ public class SessionRequest implements Serializable {
         this.studentID = studentID;
     }
 
-    public void setSlotID(String slotID) {
-        this.slotID = slotID;
+    public void setCourseName(String courseName) {
+        this.courseName = courseName;
+    }
+
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
+
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
     }
 
     public void setStatus(String status) {
-        this.slotID = status;
+        this.status = status;
     }
 }

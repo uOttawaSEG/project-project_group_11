@@ -2,6 +2,7 @@ package com.project.ui.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -12,11 +13,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.project.R;
-import com.project.data.model.AvailabilitySlot;
+import com.project.data.model.SessionRequest;
 import com.project.data.model.Tutor;
 import com.project.data.repositories.AvailabilitySlotRepository;
 import com.project.data.repositories.SessionRequestRepository;
 
+import java.util.Date;
 import java.util.List;
 
 public class UpcomingSessionActivity extends AppCompatActivity {
@@ -46,19 +48,27 @@ public class UpcomingSessionActivity extends AppCompatActivity {
         Intent intent = getIntent();
         tutor = (Tutor)intent.getSerializableExtra("userInfo");
 
+        try {
+            tutor = (Tutor) intent.getSerializableExtra("userInfo");
+        } catch (ClassCastException e) {
+            Toast.makeText(this, "Error: User is not a tutor", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+
         if (tutor == null) {
             Toast.makeText(this, "Error: No user information", Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
 
-        availabilitySlots.getTutorSlots(tutor.getUserId())
+        sessionRequests.getUpcomingTutorSessions(tutor.getUserId(), new Date())
                 .addOnSuccessListener(query -> {
-                    List<AvailabilitySlot> slots = query.toObjects(AvailabilitySlot.class);
+                    List<SessionRequest> sessions = query.toObjects(SessionRequest.class);
 
                     slotsContainer.removeAllViews();
 
-                    if (slots.isEmpty()) {
+                    if (sessions.isEmpty()) {
                         TextView emptyText = new TextView(UpcomingSessionActivity.this);
                         emptyText.setText("No upcoming sessions");
                         emptyText.setTextSize(16);
@@ -67,16 +77,22 @@ public class UpcomingSessionActivity extends AppCompatActivity {
                         return;
                     }
 
-                    for (AvailabilitySlot slot : slots) {
+                    for (SessionRequest session : sessions) {
                         View card = LayoutInflater.from(UpcomingSessionActivity.this).inflate(R.layout.item_session_card, slotsContainer, false);
 
                         TextView courseName = card.findViewById(R.id.item_session_courseName);
                         TextView startTime = card.findViewById(R.id.item_session_startTime);
                         TextView endTime = card.findViewById(R.id.item_session_endTime);
 
-                        courseName.setText(slot.getCourse());
-                        startTime.setText(slot.getStartTime());
-                        endTime.setText(slot.getEndTime());
+                        courseName.setText(session.getCourseName());
+                        startTime.setText(session.getStartDate().toString());
+                        endTime.setText(session.getEndDate().toString());
+
+                        card.setOnClickListener(view -> {
+                            Intent sessionIntent = new Intent(UpcomingSessionActivity.this, SessionActivity.class);
+                            sessionIntent.putExtra("studentID", session.getStudentID());
+                            startActivity(sessionIntent);
+                        });
 
                         slotsContainer.addView(card);
                     }

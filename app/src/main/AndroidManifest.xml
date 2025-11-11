@@ -42,6 +42,11 @@
             android:label="Upcoming Sessions"
             android:parentActivityName=".ui.activities.HomepageActivity" />
         <activity
+            android:name=".ui.activities.SessionActivity"
+            android:exported="false"
+            android:label="Session Info"
+            android:parentActivityName=".ui.activities.UpcomingSessionActivity" />
+        <activity
             android:name=".ui.activities.InboxActivity"
             android:exported="false"
             android:label="Registration Requests"
