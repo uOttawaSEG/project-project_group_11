@@ -82,7 +82,30 @@ public class LoginViewModel extends ViewModel {
         }
 
         User user = document.toObject(User.class);
-        postLoginSuccess(user);
+
+        if (user == null) {
+            postLoginFailure("Error loading user data");
+            return;
+        }
+
+        // reload as specific user type based on role
+        User specificUser;
+        String role = user.getRole();
+
+        if (role.equals("Tutor")) {
+            specificUser = document.toObject(com.project.data.model.Tutor.class);
+        }
+        else if (role.equals("Student")) {
+            specificUser = document.toObject(com.project.data.model.Student.class);
+        }
+        else if (role.equals("Admin")) {
+            specificUser = document.toObject(com.project.data.model.Administrator.class);
+        }
+        else {
+            specificUser = user;
+        }
+
+        postLoginSuccess(specificUser);
     }
 
     private void onAuthFailure(Exception error) {

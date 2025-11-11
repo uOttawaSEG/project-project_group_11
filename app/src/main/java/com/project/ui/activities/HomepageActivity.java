@@ -72,6 +72,18 @@ public class HomepageActivity extends AppCompatActivity {
 
         }
 
+        if (user.getRole().equalsIgnoreCase("Tutor")) {
+            Button manageAvailability = new Button(HomepageActivity.this);
+            manageAvailability.setText("Manage Availability");
+            manageAvailability.setOnClickListener(v -> {
+                Intent availabilityIntent = new Intent(HomepageActivity.this, ManageAvailabilityActivity.class);
+                availabilityIntent.putExtra("userInfo", user);
+                startActivity(availabilityIntent);
+            });
+            settingsPanel.addView(manageAvailability);
+
+        }
+
         Button logout = new Button(HomepageActivity.this);
         logout.setText("Logout");
         settingsPanel.addView(logout);

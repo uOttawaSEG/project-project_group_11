@@ -37,6 +37,7 @@ public class AvailabilitySlot {
     public long getTimestamp() { return timestamp; }
 
     // setters
+
     public void setSlotId(String slotId) { this.slotId = slotId; }
     public void setTutorId(String tutorId) { this.tutorId = tutorId; }
     public void setCourse(String course) { this.course = course; }
