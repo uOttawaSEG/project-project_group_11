@@ -6,7 +6,7 @@
     android:layout_height="match_parent">
 
     <androidx.appcompat.widget.Toolbar
-        android:id="@+id/upcoming_sessions_toolbar"
+        android:id="@+id/manage_session_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
@@ -15,11 +15,11 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:navigationIcon="@drawable/baseline_arrow_back_24"
-        app:title="Upcoming Sessions"
+        app:title="Manage Sessions"
         app:titleTextColor="@android:color/white" />
 
     <LinearLayout
-        android:id="@+id/upcoming_sessions_linearLayout"
+        android:id="@+id/manage_session_linearLayout"
         android:layout_width="409dp"
         android:layout_height="665dp"
         android:layout_marginStart="1dp"
@@ -30,6 +30,21 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/upcoming_sessions_toolbar"></LinearLayout>
+        app:layout_constraintTop_toBottomOf="@+id/manage_session_toolbar">
 
+        <Spinner
+            android:id="@+id/manage_session_filterSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:background="@android:drawable/edit_text"
+            android:padding="12dp" />
+
+        <LinearLayout
+            android:id="@+id/manage_session_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"></LinearLayout>
+
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

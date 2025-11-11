@@ -82,21 +82,13 @@ public class HomepageActivity extends AppCompatActivity {
 
             // button to go to the upcoming sessions activity
             Button upcomingSessions = new Button(HomepageActivity.this);
-            upcomingSessions.setText("Upcoming Sessions");
+            upcomingSessions.setText("Manage Sessions");
             upcomingSessions.setOnClickListener(view -> {
-                Intent upcomingSessionsIntent = new Intent(HomepageActivity.this, UpcomingSessionActivity.class);
+                Intent upcomingSessionsIntent = new Intent(HomepageActivity.this, ManageSessionActivity.class);
                 upcomingSessionsIntent.putExtra("userInfo", user);
                 startActivity(upcomingSessionsIntent);
             });
             settingsPanel.addView(upcomingSessions);
-
-            // button to go to the past sessions activity
-            Button pastSessions = new Button(HomepageActivity.this);
-            pastSessions.setText("Past Sessions");
-            pastSessions.setOnClickListener(view -> {
-
-            });
-            settingsPanel.addView(pastSessions);
         }
 
         Button logout = new Button(HomepageActivity.this);

@@ -37,15 +37,15 @@
             android:label="Manage Availability"
             android:parentActivityName=".ui.activities.HomepageActivity" />
         <activity
-            android:name=".ui.activities.UpcomingSessionActivity"
+            android:name=".ui.activities.ManageSessionActivity"
             android:exported="false"
-            android:label="Upcoming Sessions"
+            android:label="Manage Sessions"
             android:parentActivityName=".ui.activities.HomepageActivity" />
         <activity
             android:name=".ui.activities.SessionActivity"
             android:exported="false"
             android:label="Session Info"
-            android:parentActivityName=".ui.activities.UpcomingSessionActivity" />
+            android:parentActivityName=".ui.activities.ManageSessionActivity" />
         <activity
             android:name=".ui.activities.InboxActivity"
             android:exported="false"
