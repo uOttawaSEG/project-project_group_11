@@ -37,6 +37,11 @@
             android:label="Manage Availability"
             android:parentActivityName=".ui.activities.HomepageActivity" />
         <activity
+            android:name=".ui.activities.UpcomingSessionActivity"
+            android:exported="false"
+            android:label="Upcoming Sessions"
+            android:parentActivityName=".ui.activities.HomepageActivity" />
+        <activity
             android:name=".ui.activities.InboxActivity"
             android:exported="false"
             android:label="Registration Requests"

@@ -59,8 +59,6 @@ public class HomepageActivity extends AppCompatActivity {
             }
         });
 
-
-
         if (user.getRole().equalsIgnoreCase("Admin")) {
             Button requests = new Button(HomepageActivity.this);
             requests.setText("Rejected Requests");
@@ -69,10 +67,10 @@ public class HomepageActivity extends AppCompatActivity {
                 startActivity(requestsIntent);
             });
             settingsPanel.addView(requests);
-
         }
 
         if (user.getRole().equalsIgnoreCase("Tutor")) {
+            // button to go to the manage availability activity
             Button manageAvailability = new Button(HomepageActivity.this);
             manageAvailability.setText("Manage Availability");
             manageAvailability.setOnClickListener(v -> {
@@ -82,13 +80,28 @@ public class HomepageActivity extends AppCompatActivity {
             });
             settingsPanel.addView(manageAvailability);
 
+            // button to go to the upcoming sessions activity
+            Button upcomingSessions = new Button(HomepageActivity.this);
+            upcomingSessions.setText("Upcoming Sessions");
+            upcomingSessions.setOnClickListener(view -> {
+                Intent upcomingSessionsIntent = new Intent(HomepageActivity.this, UpcomingSessionActivity.class);
+                upcomingSessionsIntent.putExtra("userInfo", user);
+                startActivity(upcomingSessionsIntent);
+            });
+            settingsPanel.addView(upcomingSessions);
+
+            // button to go to the past sessions activity
+            Button pastSessions = new Button(HomepageActivity.this);
+            pastSessions.setText("Past Sessions");
+            pastSessions.setOnClickListener(view -> {
+
+            });
+            settingsPanel.addView(pastSessions);
         }
 
         Button logout = new Button(HomepageActivity.this);
         logout.setText("Logout");
         settingsPanel.addView(logout);
-
-
 
         // update homepage text
         TextView welcomeTextView = findViewById(R.id.homepageTextView);
