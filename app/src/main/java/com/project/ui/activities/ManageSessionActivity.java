@@ -14,24 +14,27 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.project.R;
 import com.project.data.model.SessionRequest;
 import com.project.data.model.Tutor;
-import com.project.data.repositories.SessionRequestRepository;
+import com.project.ui.viewmodels.ManageSessionViewModel;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 public class ManageSessionActivity extends AppCompatActivity {
 
+    // ui elements
     private Spinner filterSpinner;
     private LinearLayout sessionContainer;
 
+    // other state
     private Tutor tutor;
-
-    private SessionRequestRepository sessionRequests = new SessionRequestRepository();
+    private ManageSessionViewModel viewModel;
+    private String filterOption;
+    private Date currentDate = new Date();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,23 +68,28 @@ public class ManageSessionActivity extends AppCompatActivity {
         filterSpinner = findViewById(R.id.manage_session_filterSpinner);
         sessionContainer = findViewById(R.id.manage_session_container);
 
+        // setup filter spinner
         List<String> filterOptions = List.of("Upcoming Sessions", "Past Sessions", "Session Requests");
         ArrayAdapter<String> filterAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, filterOptions);
         filterSpinner.setAdapter(filterAdapter);
 
+        // refresh the list of request based on the selection
         filterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String selectedItem = parent.getItemAtPosition(position).toString();
+                filterOption = parent.getItemAtPosition(position).toString();
 
-                if (selectedItem.equals("Upcoming Sessions")) {
-                    buildUpcomingSessionsView();
+                // refresh date
+                currentDate = new Date();
+
+                if (filterOption.equals("Upcoming Sessions")) {
+                    viewModel.getUpcomingTutorSessions(tutor.getUserId(), currentDate);
                 }
-                else if (selectedItem.equals("Past Sessions")) {
-                    buildPastSessionsView();
+                else if (filterOption.equals("Past Sessions")) {
+                    viewModel.getPastTutorSessions(tutor.getUserId(), currentDate);
                 }
-                else if (selectedItem.equals("Session Requests")) {
-                    buildSessionRequestsView();
+                else if (filterOption.equals("Session Requests")) {
+                    viewModel.getPendingTutorSessions(tutor.getUserId());
                 }
             }
 
@@ -90,162 +98,78 @@ public class ManageSessionActivity extends AppCompatActivity {
                 sessionContainer.removeAllViews();
             }
         });
+
+        // setup view model
+        viewModel = new ViewModelProvider(this).get(ManageSessionViewModel.class);
+        viewModel.getSessionRequests().observe(this, this::buildSessionView);
+        viewModel.getErrorMessage().observe(this, this::showErrorMessage);
     }
 
-    private void buildUpcomingSessionsView() {
-        sessionRequests.getUpcomingTutorSessions(tutor.getUserId(), new Date())
-                .addOnSuccessListener(query -> {
-                    List<SessionRequest> sessions = query.toObjects(SessionRequest.class);
+    private void buildSessionView(List<SessionRequest> sessions) {
+        sessionContainer.removeAllViews();
 
-                    sessionContainer.removeAllViews();
+        for (SessionRequest session : sessions) {
+            View card = LayoutInflater.from(ManageSessionActivity.this).inflate(R.layout.item_session_card, sessionContainer, false);
 
-                    if (sessions.isEmpty()) {
-                        TextView emptyText = new TextView(ManageSessionActivity.this);
-                        emptyText.setText("No upcoming sessions");
-                        emptyText.setTextSize(16);
-                        emptyText.setPadding(16, 16, 16, 16);
-                        sessionContainer.addView(emptyText);
-                        return;
-                    }
+            // get card ui elements
+            TextView courseName = card.findViewById(R.id.item_session_courseName);
+            TextView startTime = card.findViewById(R.id.item_session_startTime);
+            TextView endTime = card.findViewById(R.id.item_session_endTime);
+            LinearLayout buttonContainer = card.findViewById(R.id.item_session_buttonContainer);
 
-                    for (SessionRequest session : sessions) {
-                        View card = LayoutInflater.from(ManageSessionActivity.this).inflate(R.layout.item_session_card, sessionContainer, false);
+            // set text fields
+            courseName.setText(session.getCourseName());
+            startTime.setText(session.getStartDate().toString());
+            endTime.setText(session.getEndDate().toString());
 
-                        TextView courseName = card.findViewById(R.id.item_session_courseName);
-                        TextView startTime = card.findViewById(R.id.item_session_startTime);
-                        TextView endTime = card.findViewById(R.id.item_session_endTime);
-
-                        courseName.setText(session.getCourseName());
-                        startTime.setText(session.getStartDate().toString());
-                        endTime.setText(session.getEndDate().toString());
-
-                        card.setOnClickListener(view -> {
-                            Intent sessionIntent = new Intent(ManageSessionActivity.this, SessionActivity.class);
-                            sessionIntent.putExtra("studentID", session.getStudentID());
-                            startActivity(sessionIntent);
-                        });
-
-                        sessionContainer.addView(card);
-                    }
+            // add cancel button to approved sessions
+            if (session.getStatus().equals("approved") && !session.getEndDate().before(currentDate)) {
+                Button cancelButton = new Button(ManageSessionActivity.this);
+                cancelButton.setText("Cancel");
+                cancelButton.setOnClickListener(view -> {
+                    session.setStatus("canceled");
+                    viewModel.updateSessionRequest(session, filterOption, new Date());
                 });
+
+                buttonContainer.addView(cancelButton);
+            }
+            // add approve and reject buttons to pending session requests
+            else if (session.getStatus().equals("pending")) {
+                Button approveButton = new Button(ManageSessionActivity.this);
+                approveButton.setText("Approve");
+                approveButton.setOnClickListener(view -> {
+                    session.setStatus("approved");
+                    viewModel.updateSessionRequest(session, filterOption, new Date());
+                });
+
+                Button rejectButton = new Button(ManageSessionActivity.this);
+                rejectButton.setText("Reject");
+                rejectButton.setOnClickListener(view -> {
+                    session.setStatus("rejected");
+                    viewModel.updateSessionRequest(session, filterOption, new Date());
+                });
+
+                buttonContainer.addView(approveButton);
+                buttonContainer.addView(rejectButton);
+            }
+
+            card.setOnClickListener(view -> {
+                Intent sessionIntent = new Intent(ManageSessionActivity.this, SessionActivity.class);
+                sessionIntent.putExtra("studentID", session.getStudentID());
+                startActivity(sessionIntent);
+            });
+
+            sessionContainer.addView(card);
+        }
     }
 
-    private void buildPastSessionsView() {
-        sessionRequests.getPastTutorSessions(tutor.getUserId(), new Date())
-                .addOnSuccessListener(query -> {
-                    List<SessionRequest> sessions = query.toObjects(SessionRequest.class);
+    private void showErrorMessage(String message) {
+        sessionContainer.removeAllViews();
 
-                    sessionContainer.removeAllViews();
-
-                    if (sessions.isEmpty()) {
-                        TextView emptyText = new TextView(ManageSessionActivity.this);
-                        emptyText.setText("No past sessions");
-                        emptyText.setTextSize(16);
-                        emptyText.setPadding(16, 16, 16, 16);
-                        sessionContainer.addView(emptyText);
-                        return;
-                    }
-
-                    for (SessionRequest session : sessions) {
-                        View card = LayoutInflater.from(ManageSessionActivity.this).inflate(R.layout.item_session_card, sessionContainer, false);
-
-                        TextView courseName = card.findViewById(R.id.item_session_courseName);
-                        TextView startTime = card.findViewById(R.id.item_session_startTime);
-                        TextView endTime = card.findViewById(R.id.item_session_endTime);
-
-                        courseName.setText(session.getCourseName());
-                        startTime.setText(session.getStartDate().toString());
-                        endTime.setText(session.getEndDate().toString());
-
-                        card.setOnClickListener(view -> {
-                            Intent sessionIntent = new Intent(ManageSessionActivity.this, SessionActivity.class);
-                            sessionIntent.putExtra("studentID", session.getStudentID());
-                            startActivity(sessionIntent);
-                        });
-
-                        sessionContainer.addView(card);
-                    }
-                });
-    }
-
-    private void buildSessionRequestsView() {
-        sessionRequests.getSessionRequestByTutorID(tutor.getUserId())
-                .addOnSuccessListener(query -> {
-                    List<SessionRequest> sessions = query.toObjects(SessionRequest.class);
-
-                    sessionContainer.removeAllViews();
-
-                    if (sessions.isEmpty()) {
-                        TextView emptyText = new TextView(ManageSessionActivity.this);
-                        emptyText.setText("No session requests");
-                        emptyText.setTextSize(16);
-                        emptyText.setPadding(16, 16, 16, 16);
-                        sessionContainer.addView(emptyText);
-                        return;
-                    }
-
-                    for (SessionRequest session : sessions) {
-                        if (session.getStatus().equals("canceled") || session.getEndDate().before(new Date())) {
-                            continue;
-                        }
-
-                        View card = LayoutInflater.from(ManageSessionActivity.this).inflate(R.layout.item_session_card, sessionContainer, false);
-
-                        TextView courseName = card.findViewById(R.id.item_session_courseName);
-                        TextView startTime = card.findViewById(R.id.item_session_startTime);
-                        TextView endTime = card.findViewById(R.id.item_session_endTime);
-                        LinearLayout buttonContainer = card.findViewById(R.id.item_session_buttonContainer);
-
-                        if (session.getStatus().equals("approved")) {
-                            Button cancelButton = new Button(ManageSessionActivity.this);
-                            cancelButton.setText("Cancel");
-                            cancelButton.setOnClickListener(view -> {
-                                session.setStatus("canceled");
-                                sessionRequests.updateSessionRequest(session.getSessionID(), session)
-                                        .addOnSuccessListener(v -> {
-                                            buildSessionRequestsView();
-                                        });
-                            });
-
-                            buttonContainer.addView(cancelButton);
-                        }
-                        else if (session.getStatus().equals("pending")) {
-                            Button approveButton = new Button(ManageSessionActivity.this);
-                            approveButton.setText("Approve");
-                            approveButton.setOnClickListener(view -> {
-                                session.setStatus("approved");
-                                sessionRequests.updateSessionRequest(session.getSessionID(), session)
-                                        .addOnSuccessListener(v -> {
-                                            buildSessionRequestsView();
-                                        });
-                            });
-
-                            Button rejectButton = new Button(ManageSessionActivity.this);
-                            rejectButton.setText("Reject");
-                            rejectButton.setOnClickListener(view -> {
-                                session.setStatus("rejected");
-                                sessionRequests.updateSessionRequest(session.getSessionID(), session)
-                                        .addOnSuccessListener(v -> {
-                                            buildSessionRequestsView();
-                                        });
-                            });
-
-                            buttonContainer.addView(approveButton);
-                            buttonContainer.addView(rejectButton);
-                        }
-
-                        courseName.setText(session.getCourseName());
-                        startTime.setText(session.getStartDate().toString());
-                        endTime.setText(session.getEndDate().toString());
-
-                        card.setOnClickListener(view -> {
-                            Intent sessionIntent = new Intent(ManageSessionActivity.this, SessionActivity.class);
-                            sessionIntent.putExtra("studentID", session.getStudentID());
-                            startActivity(sessionIntent);
-                        });
-
-                        sessionContainer.addView(card);
-                    }
-                });
+        TextView emptyText = new TextView(ManageSessionActivity.this);
+        emptyText.setText(message);
+        emptyText.setTextSize(16);
+        emptyText.setPadding(16, 16, 16, 16);
+        sessionContainer.addView(emptyText);
     }
 }

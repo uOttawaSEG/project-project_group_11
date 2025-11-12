@@ -9,6 +9,7 @@ import com.project.data.model.RegistrationRequest;
 import com.project.data.repositories.RegistrationRequestRepository;
 import com.project.data.repositories.UserRepository;
 
+//TODO: this does nothing for now - it is not used
 public class App {
 
     // singleton instance

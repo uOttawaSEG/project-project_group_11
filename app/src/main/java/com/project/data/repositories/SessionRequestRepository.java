@@ -1,5 +1,7 @@
 package com.project.data.repositories;
 
+import android.util.Log;
+
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -37,5 +39,15 @@ public class SessionRequestRepository {
                 .whereEqualTo("status", "approved")
                 .whereLessThan("endDate", date)
                 .get();
+    }
+
+    public Task<QuerySnapshot> getPendingTutorSessions(String tutorID) {
+        return repo
+                .whereEqualTo("tutorID", tutorID)
+                .whereEqualTo("status", "pending")
+                .get()
+                .addOnFailureListener(error -> {
+                   Log.e(TAG, error.toString());
+                });
     }
 }
