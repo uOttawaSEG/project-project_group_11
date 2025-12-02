@@ -5,6 +5,7 @@ import java.util.Date;
 
 public class SessionRequest implements Serializable {
     private String sessionID;
+    private String slotID;
     private String tutorID;
     private String studentID;
     private String courseName;
@@ -14,8 +15,9 @@ public class SessionRequest implements Serializable {
 
     public SessionRequest() {}
 
-    public SessionRequest(String sessionID, String tutorID, String studentID, String courseName, Date startDate, Date endDate, String status) {
+    public SessionRequest(String sessionID, String slotID, String tutorID, String studentID, String courseName, Date startDate, Date endDate, String status) {
         this.sessionID = sessionID;
+        this.slotID = slotID;
         this.tutorID = tutorID;
         this.studentID = studentID;
         this.courseName = courseName;
@@ -27,6 +29,10 @@ public class SessionRequest implements Serializable {
 
     public String getSessionID() {
         return sessionID;
+    }
+
+    public String getSlotID() {
+        return slotID;
     }
 
     public String getTutorID() {
@@ -55,6 +61,10 @@ public class SessionRequest implements Serializable {
 
     public void setSessionID(String sessionID) {
         this.sessionID = sessionID;
+    }
+
+    public void setSlotID(String slotID) {
+        this.slotID = slotID;
     }
 
     public void setTutorID(String tutorID) {

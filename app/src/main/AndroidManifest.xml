@@ -56,6 +56,11 @@
             android:exported="false"
             android:label="Rejected Requests"
             android:parentActivityName=".ui.activities.HomepageActivity" />
+        <activity
+            android:name=".ui.activities.StudentSessionDetailActivity"
+            android:exported="false"
+            android:label="Session Details"
+            android:parentActivityName=".ui.activities.HomepageActivity" />
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />

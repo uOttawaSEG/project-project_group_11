@@ -14,10 +14,13 @@ import androidx.fragment.app.Fragment;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.project.R;
+import com.project.data.model.Student;
 import com.project.data.model.Tutor;
 import com.project.data.model.User;
 import com.project.ui.fragments.AvailabilityFragment;
+import com.project.ui.fragments.SearchTutorsFragment;
 import com.project.ui.fragments.SessionsFragment;
+import com.project.ui.fragments.StudentSessionsFragment;
 
 public class HomepageActivity extends AppCompatActivity {
     @Override
@@ -77,6 +80,10 @@ public class HomepageActivity extends AppCompatActivity {
             setupTutorTabs((Tutor) user);
         }
 
+        if (user.getRole().equalsIgnoreCase("Student")) {
+            setupStudentTabs((com.project.data.model.Student) user);
+        }
+
         Button logout = new Button(HomepageActivity.this);
         logout.setText("Logout");
         settingsPanel.addView(logout);
@@ -104,13 +111,13 @@ public class HomepageActivity extends AppCompatActivity {
     }
 
     private void setupTutorTabs(Tutor tutor) {
-        LinearLayout tutorContentLayout = findViewById(R.id.tutorContentLayout);
-        TabLayout tutorTabLayout = findViewById(R.id.tutorTabLayout);
+        LinearLayout contentLayout = findViewById(R.id.contentLayout);
+        TabLayout tabLayout = findViewById(R.id.tabLayout);
 
-        tutorContentLayout.setVisibility(View.VISIBLE);
+        contentLayout.setVisibility(View.VISIBLE);
 
-        tutorTabLayout.addTab(tutorTabLayout.newTab().setText("Manage Availability"));
-        tutorTabLayout.addTab(tutorTabLayout.newTab().setText("Manage Sessions"));
+        tabLayout.addTab(tabLayout.newTab().setText("Manage Availability"));
+        tabLayout.addTab(tabLayout.newTab().setText("Manage Sessions"));
 
         AvailabilityFragment availabilityFragment = AvailabilityFragment.newInstance(tutor);
         SessionsFragment sessionsFragment = SessionsFragment.newInstance(tutor);
@@ -119,7 +126,7 @@ public class HomepageActivity extends AppCompatActivity {
                 .replace(R.id.fragmentContainer, availabilityFragment)
                 .commit();
 
-        tutorTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 Fragment selectedFragment;
@@ -128,6 +135,47 @@ public class HomepageActivity extends AppCompatActivity {
                 } else {
                     selectedFragment = sessionsFragment;
                     sessionsFragment.refreshSessions();
+                }
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragmentContainer, selectedFragment)
+                        .commit();
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+            }
+        });
+    }
+
+    private void setupStudentTabs(Student student) {
+        LinearLayout contentLayout = findViewById(R.id.contentLayout);
+        TabLayout tabLayout = findViewById(R.id.tabLayout);
+
+        contentLayout.setVisibility(View.VISIBLE);
+
+        tabLayout.addTab(tabLayout.newTab().setText("My Sessions"));
+        tabLayout.addTab(tabLayout.newTab().setText("Search Tutors"));
+
+        StudentSessionsFragment studentSessionsFragment = StudentSessionsFragment.newInstance(student);
+        SearchTutorsFragment searchTutorsFragment = SearchTutorsFragment.newInstance(student);
+
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragmentContainer, studentSessionsFragment)
+                .commit();
+
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                Fragment selectedFragment;
+                if (tab.getPosition() == 0) {
+                    selectedFragment = studentSessionsFragment;
+                    studentSessionsFragment.refreshSessions();
+                } else {
+                    selectedFragment = searchTutorsFragment;
                 }
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fragmentContainer, selectedFragment)

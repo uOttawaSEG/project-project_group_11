@@ -64,7 +64,7 @@
         app:layout_constraintEnd_toEndOf="parent" />
 
     <LinearLayout
-        android:id="@+id/tutorContentLayout"
+        android:id="@+id/contentLayout"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:orientation="vertical"
@@ -75,7 +75,7 @@
         app:layout_constraintEnd_toEndOf="parent">
 
         <com.google.android.material.tabs.TabLayout
-            android:id="@+id/tutorTabLayout"
+            android:id="@+id/tabLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#9575CD"

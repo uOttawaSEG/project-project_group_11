@@ -73,6 +73,62 @@ public class ManageSessionViewModel extends ViewModel {
                 });
     }
 
+    public void getAllStudentSessions(String studentID) {
+        sessionRequestRepo.getSessionsByStudentID(studentID)
+                .addOnSuccessListener(query -> {
+                    List<SessionRequest> sessions = query.toObjects(SessionRequest.class);
+
+                    if (sessions.isEmpty()) {
+                        errorMessage.postValue("No sessions found");
+                    }
+
+                    sessionRequests.postValue(sessions);
+                });
+    }
+
+    public void getUpcomingStudentSessions(String studentID, Date date) {
+        sessionRequestRepo.getUpcomingStudentSessions(studentID, date)
+                .addOnSuccessListener(query -> {
+                    List<SessionRequest> sessions = query.toObjects(SessionRequest.class);
+
+                    if (sessions.isEmpty()) {
+                        errorMessage.postValue("No upcoming sessions");
+                    }
+
+                    sessionRequests.postValue(sessions);
+                });
+    }
+
+    public void getPastStudentSessions(String studentID, Date date) {
+        sessionRequestRepo.getPastStudentSessions(studentID, date)
+                .addOnSuccessListener(query -> {
+                    List<SessionRequest> sessions = query.toObjects(SessionRequest.class);
+
+                    if (sessions.isEmpty()) {
+                        errorMessage.postValue("No past sessions");
+                    }
+
+                    sessionRequests.postValue(sessions);
+                });
+    }
+
+    public void getPendingStudentSessions(String studentID) {
+        sessionRequestRepo.getPendingStudentSessions(studentID)
+                .addOnSuccessListener(query -> {
+                    List<SessionRequest> sessions = query.toObjects(SessionRequest.class);
+
+                    if (sessions.isEmpty()) {
+                        errorMessage.postValue("No pending requests");
+                    }
+
+                    sessionRequests.postValue(sessions);
+                });
+    }
+
+    public boolean canCancelSession(SessionRequest session) {
+        return sessionRequestRepo.canCancelSession(session);
+    }
+
     public LiveData<List<SessionRequest>> getSessionRequests() {
         return sessionRequests;
     }
