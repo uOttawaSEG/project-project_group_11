@@ -65,6 +65,10 @@ public class StudentSessionsFragment extends Fragment {
         sessionFilterSpinner = view.findViewById(R.id.sessionFilterSpinner);
         sessionContainer = view.findViewById(R.id.sessionContainer);
 
+        viewModel = new ViewModelProvider(this).get(ManageSessionViewModel.class);
+        viewModel.getSessionRequests().observe(getViewLifecycleOwner(), this::buildSessionView);
+        viewModel.getErrorMessage().observe(getViewLifecycleOwner(), this::showErrorMessage);
+
         List<String> filterOptions = List.of("All Sessions", "Upcoming Sessions", "Past Sessions", "Pending Requests");
         ArrayAdapter<String> filterAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item, filterOptions);
         sessionFilterSpinner.setAdapter(filterAdapter);
@@ -91,16 +95,17 @@ public class StudentSessionsFragment extends Fragment {
                 sessionContainer.removeAllViews();
             }
         });
-
-        viewModel = new ViewModelProvider(this).get(ManageSessionViewModel.class);
-        viewModel.getSessionRequests().observe(getViewLifecycleOwner(), this::buildSessionView);
-        viewModel.getErrorMessage().observe(getViewLifecycleOwner(), this::showErrorMessage);
     }
 
     private void buildSessionView(List<SessionRequest> sessions) {
         sessionContainer.removeAllViews();
 
         for (SessionRequest session : sessions) {
+            String status = session.getStatus();
+            if (status.equals("canceled") || status.equals("rejected")) {
+                continue;
+            }
+
             View card = LayoutInflater.from(getContext()).inflate(R.layout.item_student_session_card, sessionContainer, false);
 
             TextView courseName = card.findViewById(R.id.item_session_courseName);
@@ -113,7 +118,6 @@ public class StudentSessionsFragment extends Fragment {
             startTime.setText("Start: " + session.getStartDate().toString());
             endTime.setText("End: " + session.getEndDate().toString());
 
-            String status = session.getStatus();
             statusBadge.setText(status.toUpperCase());
             if (status.equals("approved")) {
                 statusBadge.setBackgroundColor(Color.parseColor("#4CAF50"));
@@ -154,6 +158,10 @@ public class StudentSessionsFragment extends Fragment {
     }
 
     private void showErrorMessage(String message) {
+        if (message == null) {
+            return;
+        }
+
         sessionContainer.removeAllViews();
 
         TextView emptyText = new TextView(getContext());

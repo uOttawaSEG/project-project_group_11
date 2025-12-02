@@ -79,22 +79,17 @@ public class AvailabilityViewModel extends ViewModel {
         sessionRequestRepository.getSessionsBySlotID(slotId)
                 .addOnSuccessListener(query -> {
                     List<SessionRequest> sessions = query.toObjects(SessionRequest.class);
-                    boolean hasBookedSessions = false;
 
                     for (SessionRequest session : sessions) {
                         if (session.getStatus().equals("approved") || session.getStatus().equals("pending")) {
-                            hasBookedSessions = true;
-                            break;
+                            postError("Cannot delete slot with pending or approved sessions");
+                            return;
                         }
                     }
 
-                    if (hasBookedSessions) {
-                        postError("Cannot delete slot with pending or approved sessions");
-                    } else {
-                        repository.deleteSlot(slotId)
-                                .addOnSuccessListener(this::onDeleteSlotSuccess)
-                                .addOnFailureListener(this::onDeleteSlotFailure);
-                    }
+                    repository.deleteSlot(slotId)
+                            .addOnSuccessListener(this::onDeleteSlotSuccess)
+                            .addOnFailureListener(this::onDeleteSlotFailure);
                 })
                 .addOnFailureListener(this::onDeleteSlotFailure);
     }

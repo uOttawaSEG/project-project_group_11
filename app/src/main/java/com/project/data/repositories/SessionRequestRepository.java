@@ -28,7 +28,6 @@ public class SessionRequestRepository {
     public Task<QuerySnapshot> getUpcomingTutorSessions(String tutorID, Date date) {
         return repo
                 .whereEqualTo("tutorID", tutorID)
-                .whereEqualTo("status", "approved")
                 .whereGreaterThan("startDate", date)
                 .get();
     }
@@ -36,7 +35,6 @@ public class SessionRequestRepository {
     public Task<QuerySnapshot> getPastTutorSessions(String tutorID, Date date) {
         return repo
                 .whereEqualTo("tutorID", tutorID)
-                .whereEqualTo("status", "approved")
                 .whereLessThan("endDate", date)
                 .get();
     }
@@ -58,7 +56,6 @@ public class SessionRequestRepository {
     public Task<QuerySnapshot> getUpcomingStudentSessions(String studentID, Date date) {
         return repo
                 .whereEqualTo("studentID", studentID)
-                .whereEqualTo("status", "approved")
                 .whereGreaterThan("startDate", date)
                 .get();
     }
@@ -66,7 +63,6 @@ public class SessionRequestRepository {
     public Task<QuerySnapshot> getPastStudentSessions(String studentID, Date date) {
         return repo
                 .whereEqualTo("studentID", studentID)
-                .whereEqualTo("status", "approved")
                 .whereLessThan("endDate", date)
                 .get();
     }

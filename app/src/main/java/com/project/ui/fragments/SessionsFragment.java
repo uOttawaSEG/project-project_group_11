@@ -64,6 +64,10 @@ public class SessionsFragment extends Fragment {
         sessionFilterSpinner = view.findViewById(R.id.sessionFilterSpinner);
         sessionContainer = view.findViewById(R.id.sessionContainer);
 
+        viewModel = new ViewModelProvider(this).get(ManageSessionViewModel.class);
+        viewModel.getSessionRequests().observe(getViewLifecycleOwner(), this::buildSessionView);
+        viewModel.getErrorMessage().observe(getViewLifecycleOwner(), this::showErrorMessage);
+
         List<String> filterOptions = List.of("Upcoming Sessions", "Past Sessions", "Session Requests");
         ArrayAdapter<String> filterAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item, filterOptions);
         sessionFilterSpinner.setAdapter(filterAdapter);
@@ -88,16 +92,17 @@ public class SessionsFragment extends Fragment {
                 sessionContainer.removeAllViews();
             }
         });
-
-        viewModel = new ViewModelProvider(this).get(ManageSessionViewModel.class);
-        viewModel.getSessionRequests().observe(getViewLifecycleOwner(), this::buildSessionView);
-        viewModel.getErrorMessage().observe(getViewLifecycleOwner(), this::showErrorMessage);
     }
 
     private void buildSessionView(List<SessionRequest> sessions) {
         sessionContainer.removeAllViews();
 
         for (SessionRequest session : sessions) {
+            String status = session.getStatus();
+            if (status.equals("canceled") || status.equals("rejected")) {
+                continue;
+            }
+
             View card = LayoutInflater.from(getContext()).inflate(R.layout.item_session_card, sessionContainer, false);
 
             TextView courseName = card.findViewById(R.id.item_session_courseName);
@@ -148,6 +153,10 @@ public class SessionsFragment extends Fragment {
     }
 
     private void showErrorMessage(String message) {
+        if (message == null) {
+            return;
+        }
+
         sessionContainer.removeAllViews();
 
         TextView emptyText = new TextView(getContext());

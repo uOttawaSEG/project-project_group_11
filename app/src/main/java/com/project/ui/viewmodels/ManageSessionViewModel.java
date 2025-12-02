@@ -23,12 +23,13 @@ public class ManageSessionViewModel extends ViewModel {
         sessionRequestRepo.getUpcomingTutorSessions(tutorID, date)
                 .addOnSuccessListener(query -> {
                     List<SessionRequest> sessions = query.toObjects(SessionRequest.class);
+                    sessionRequests.postValue(sessions);
 
                     if (sessions.isEmpty()) {
                         errorMessage.postValue("No upcoming sessions");
+                    } else {
+                        errorMessage.postValue(null);
                     }
-
-                    sessionRequests.postValue(sessions);
                 });
     }
 
@@ -36,12 +37,13 @@ public class ManageSessionViewModel extends ViewModel {
         sessionRequestRepo.getPastTutorSessions(tutorID, date)
                 .addOnSuccessListener(query -> {
                     List<SessionRequest> sessions = query.toObjects(SessionRequest.class);
+                    sessionRequests.postValue(sessions);
 
                     if (sessions.isEmpty()) {
                         errorMessage.postValue("No past sessions");
+                    } else {
+                        errorMessage.postValue(null);
                     }
-
-                    sessionRequests.postValue(sessions);
                 });
     }
 
@@ -49,12 +51,13 @@ public class ManageSessionViewModel extends ViewModel {
         sessionRequestRepo.getPendingTutorSessions(tutorID)
                 .addOnSuccessListener(query -> {
                     List<SessionRequest> sessions = query.toObjects(SessionRequest.class);
+                    sessionRequests.postValue(sessions);
 
                     if (sessions.isEmpty()) {
                         errorMessage.postValue("No session requests");
+                    } else {
+                        errorMessage.postValue(null);
                     }
-
-                    sessionRequests.postValue(sessions);
                 });
     }
 
@@ -77,12 +80,13 @@ public class ManageSessionViewModel extends ViewModel {
         sessionRequestRepo.getSessionsByStudentID(studentID)
                 .addOnSuccessListener(query -> {
                     List<SessionRequest> sessions = query.toObjects(SessionRequest.class);
+                    sessionRequests.postValue(sessions);
 
                     if (sessions.isEmpty()) {
                         errorMessage.postValue("No sessions found");
+                    } else {
+                        errorMessage.postValue(null);
                     }
-
-                    sessionRequests.postValue(sessions);
                 });
     }
 
@@ -90,12 +94,13 @@ public class ManageSessionViewModel extends ViewModel {
         sessionRequestRepo.getUpcomingStudentSessions(studentID, date)
                 .addOnSuccessListener(query -> {
                     List<SessionRequest> sessions = query.toObjects(SessionRequest.class);
+                    sessionRequests.postValue(sessions);
 
                     if (sessions.isEmpty()) {
                         errorMessage.postValue("No upcoming sessions");
+                    } else {
+                        errorMessage.postValue(null);
                     }
-
-                    sessionRequests.postValue(sessions);
                 });
     }
 
@@ -103,12 +108,13 @@ public class ManageSessionViewModel extends ViewModel {
         sessionRequestRepo.getPastStudentSessions(studentID, date)
                 .addOnSuccessListener(query -> {
                     List<SessionRequest> sessions = query.toObjects(SessionRequest.class);
+                    sessionRequests.postValue(sessions);
 
                     if (sessions.isEmpty()) {
                         errorMessage.postValue("No past sessions");
+                    } else {
+                        errorMessage.postValue(null);
                     }
-
-                    sessionRequests.postValue(sessions);
                 });
     }
 
@@ -116,12 +122,13 @@ public class ManageSessionViewModel extends ViewModel {
         sessionRequestRepo.getPendingStudentSessions(studentID)
                 .addOnSuccessListener(query -> {
                     List<SessionRequest> sessions = query.toObjects(SessionRequest.class);
+                    sessionRequests.postValue(sessions);
 
                     if (sessions.isEmpty()) {
                         errorMessage.postValue("No pending requests");
+                    } else {
+                        errorMessage.postValue(null);
                     }
-
-                    sessionRequests.postValue(sessions);
                 });
     }
 
