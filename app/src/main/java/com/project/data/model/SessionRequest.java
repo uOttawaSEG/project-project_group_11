@@ -1,21 +1,21 @@
 package com.project.data.model;
 
-import java.io.Serializable;
 import java.util.Date;
+import com.google.firebase.Timestamp;
 
-public class SessionRequest implements Serializable {
+public class SessionRequest {
     private String sessionID;
     private String slotID;
     private String tutorID;
     private String studentID;
     private String courseName;
-    private Date startDate;
-    private Date endDate;
+    private Timestamp startDate;
+    private Timestamp endDate;
     private String status;
 
     public SessionRequest() {}
 
-    public SessionRequest(String sessionID, String slotID, String tutorID, String studentID, String courseName, Date startDate, Date endDate, String status) {
+    public SessionRequest(String sessionID, String slotID, String tutorID, String studentID, String courseName, Timestamp startDate, Timestamp endDate, String status) {
         this.sessionID = sessionID;
         this.slotID = slotID;
         this.tutorID = tutorID;
@@ -47,11 +47,11 @@ public class SessionRequest implements Serializable {
         return courseName;
     }
 
-    public Date getStartDate() {
+    public Timestamp getStartDate() {
         return startDate;
     }
 
-    public Date getEndDate() {
+    public Timestamp getEndDate() {
         return endDate;
     }
 
@@ -79,11 +79,11 @@ public class SessionRequest implements Serializable {
         this.courseName = courseName;
     }
 
-    public void setStartDate(Date startDate) {
+    public void setStartDate(Timestamp startDate) {
         this.startDate = startDate;
     }
 
-    public void setEndDate(Date endDate) {
+    public void setEndDate(Timestamp endDate) {
         this.endDate = endDate;
     }
 

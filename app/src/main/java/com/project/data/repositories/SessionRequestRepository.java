@@ -3,7 +3,9 @@ package com.project.data.repositories;
 import android.util.Log;
 
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.project.data.model.SessionRequest;
@@ -20,6 +22,10 @@ public class SessionRequestRepository {
         return repo.document(sessionID).set(session);
     }
 
+    public Task<DocumentSnapshot> getSessionRequestById(String sessionID) {
+        return repo.document(sessionID).get();
+    }
+
     // get all sessions associated to a single tutor
     public Task<QuerySnapshot> getSessionRequestByTutorID(String tutorID) {
         return repo.whereEqualTo("tutorID", tutorID).get();
@@ -28,14 +34,12 @@ public class SessionRequestRepository {
     public Task<QuerySnapshot> getUpcomingTutorSessions(String tutorID, Date date) {
         return repo
                 .whereEqualTo("tutorID", tutorID)
-                .whereGreaterThan("startDate", date)
                 .get();
     }
 
     public Task<QuerySnapshot> getPastTutorSessions(String tutorID, Date date) {
         return repo
                 .whereEqualTo("tutorID", tutorID)
-                .whereLessThan("endDate", date)
                 .get();
     }
 
@@ -56,14 +60,12 @@ public class SessionRequestRepository {
     public Task<QuerySnapshot> getUpcomingStudentSessions(String studentID, Date date) {
         return repo
                 .whereEqualTo("studentID", studentID)
-                .whereGreaterThan("startDate", date)
                 .get();
     }
 
     public Task<QuerySnapshot> getPastStudentSessions(String studentID, Date date) {
         return repo
                 .whereEqualTo("studentID", studentID)
-                .whereLessThan("endDate", date)
                 .get();
     }
 
@@ -85,7 +87,10 @@ public class SessionRequestRepository {
         if (session == null || session.getStartDate() == null) {
             return false;
         }
-        long timeUntilStart = session.getStartDate().getTime() - System.currentTimeMillis();
+        long startMs = session.getStartDate().toDate().getTime();
+        long nowMs = System.currentTimeMillis();
+        long timeUntilStart = startMs - nowMs;
+
         return timeUntilStart > 24 * 60 * 60 * 1000;
     }
 }

@@ -17,6 +17,7 @@ import com.project.data.model.Rating;
 import com.project.data.model.SessionRequest;
 import com.project.data.model.User;
 import com.project.data.repositories.RatingRepository;
+import com.project.data.repositories.SessionRequestRepository;
 import com.project.data.repositories.UserRepository;
 
 import java.util.Date;
@@ -25,6 +26,7 @@ public class StudentSessionDetailActivity extends AppCompatActivity {
 
     private SessionRequest session;
     private RatingRepository ratingRepo = new RatingRepository();
+    private SessionRequestRepository sessionRepo = new SessionRequestRepository();
     private UserRepository userRepo = new UserRepository();
 
     private TextView detailCourseName;
@@ -49,8 +51,8 @@ public class StudentSessionDetailActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbar.setNavigationOnClickListener(v -> finish());
 
-        session = (SessionRequest) getIntent().getSerializableExtra("session");
-        if (session == null) {
+        String sessionID = getIntent().getStringExtra("sessionID");
+        if (sessionID == null) {
             finish();
             return;
         }
@@ -67,17 +69,39 @@ public class StudentSessionDetailActivity extends AppCompatActivity {
         existingRatingBar = findViewById(R.id.existingRatingBar);
         submitRatingButton = findViewById(R.id.submitRatingButton);
 
-        displaySessionDetails();
-        fetchTutorInfo();
-        checkRatingEligibility();
+        fetchSessionDetails(sessionID);
 
         submitRatingButton.setOnClickListener(v -> submitRating());
     }
 
+    private void fetchSessionDetails(String sessionID) {
+        sessionRepo.getSessionRequestById(sessionID)
+                .addOnSuccessListener(doc -> {
+                    if (doc.exists()) {
+                        session = doc.toObject(SessionRequest.class);
+                        if (session != null) {
+                            displaySessionDetails();
+                            fetchTutorInfo();
+                            checkRatingEligibility();
+                        } else {
+                            Toast.makeText(this, "Session not found", Toast.LENGTH_SHORT).show();
+                            finish();
+                        }
+                    } else {
+                        Toast.makeText(this, "Session not found", Toast.LENGTH_SHORT).show();
+                        finish();
+                    }
+                })
+                .addOnFailureListener(error -> {
+                    Toast.makeText(this, "Failed to load session", Toast.LENGTH_SHORT).show();
+                    finish();
+                });
+    }
+
     private void displaySessionDetails() {
         detailCourseName.setText(session.getCourseName());
-        detailStartDate.setText("Start: " + session.getStartDate().toString());
-        detailEndDate.setText("End: " + session.getEndDate().toString());
+        detailStartDate.setText("Start: " + session.getStartDate().toDate().toString());
+        detailEndDate.setText("End: " + session.getEndDate().toDate().toString());
 
         String status = session.getStatus();
         detailStatus.setText(status.toUpperCase());
@@ -109,7 +133,7 @@ public class StudentSessionDetailActivity extends AppCompatActivity {
 
     private void checkRatingEligibility() {
         Date currentDate = new Date();
-        boolean isPastSession = session.getEndDate() != null && session.getEndDate().before(currentDate);
+        boolean isPastSession = session.getEndDate() != null && session.getEndDate().toDate().before(currentDate);
         boolean isApproved = session.getStatus().equals("approved");
 
         if (isPastSession && isApproved) {

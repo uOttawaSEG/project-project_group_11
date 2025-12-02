@@ -93,6 +93,7 @@ public class LoginActivity extends AppCompatActivity {
         String password = passwordField.getText().toString().trim();
 
         if (!validateLoginForm(email, password)) {
+            enableButtons(true);
             return;
         }
 

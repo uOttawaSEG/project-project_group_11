@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.project.data.model.AvailabilitySlot;
 import com.project.data.model.Rating;
@@ -104,8 +105,8 @@ public class SearchTutorsViewModel extends ViewModel {
                     slot.getTutorId(),
                     studentId,
                     slot.getCourse(),
-                    startDate,
-                    endDate,
+                    new Timestamp(startDate),
+                    new Timestamp(endDate),
                     status
             );
 

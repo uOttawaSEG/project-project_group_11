@@ -111,15 +111,15 @@ public class SessionsFragment extends Fragment {
             LinearLayout buttonContainer = card.findViewById(R.id.item_session_buttonContainer);
 
             courseName.setText(session.getCourseName());
-            startTime.setText(session.getStartDate().toString());
-            endTime.setText(session.getEndDate().toString());
+            startTime.setText(session.getStartDate().toDate().toString());
+            endTime.setText(session.getEndDate().toDate().toString());
 
-            if (session.getStatus().equals("approved") && !session.getEndDate().before(currentDate)) {
+            if (session.getStatus().equals("approved") && !session.getEndDate().toDate().before(currentDate)) {
                 Button cancelButton = new Button(getContext());
                 cancelButton.setText("Cancel");
                 cancelButton.setOnClickListener(view -> {
                     session.setStatus("canceled");
-                    viewModel.updateSessionRequest(session, filterOption, new Date());
+                    viewModel.updateSessionRequest(session, filterOption, new Date(), tutorId);
                 });
 
                 buttonContainer.addView(cancelButton);
@@ -128,14 +128,14 @@ public class SessionsFragment extends Fragment {
                 approveButton.setText("Approve");
                 approveButton.setOnClickListener(view -> {
                     session.setStatus("approved");
-                    viewModel.updateSessionRequest(session, filterOption, new Date());
+                    viewModel.updateSessionRequest(session, filterOption, new Date(), tutorId);
                 });
 
                 Button rejectButton = new Button(getContext());
                 rejectButton.setText("Reject");
                 rejectButton.setOnClickListener(view -> {
                     session.setStatus("rejected");
-                    viewModel.updateSessionRequest(session, filterOption, new Date());
+                    viewModel.updateSessionRequest(session, filterOption, new Date(), tutorId);
                 });
 
                 buttonContainer.addView(approveButton);

@@ -123,12 +123,12 @@ public class ManageSessionActivity extends AppCompatActivity {
             endTime.setText(session.getEndDate().toString());
 
             // add cancel button to approved sessions
-            if (session.getStatus().equals("approved") && !session.getEndDate().before(currentDate)) {
+            if (session.getStatus().equals("approved") && !session.getEndDate().toDate().before(currentDate)) {
                 Button cancelButton = new Button(ManageSessionActivity.this);
                 cancelButton.setText("Cancel");
                 cancelButton.setOnClickListener(view -> {
                     session.setStatus("canceled");
-                    viewModel.updateSessionRequest(session, filterOption, new Date());
+                    viewModel.updateSessionRequest(session, filterOption, new Date(), tutor.getUserId());
                 });
 
                 buttonContainer.addView(cancelButton);
@@ -139,14 +139,14 @@ public class ManageSessionActivity extends AppCompatActivity {
                 approveButton.setText("Approve");
                 approveButton.setOnClickListener(view -> {
                     session.setStatus("approved");
-                    viewModel.updateSessionRequest(session, filterOption, new Date());
+                    viewModel.updateSessionRequest(session, filterOption, new Date(), tutor.getUserId());
                 });
 
                 Button rejectButton = new Button(ManageSessionActivity.this);
                 rejectButton.setText("Reject");
                 rejectButton.setOnClickListener(view -> {
                     session.setStatus("rejected");
-                    viewModel.updateSessionRequest(session, filterOption, new Date());
+                    viewModel.updateSessionRequest(session, filterOption, new Date(), tutor.getUserId());
                 });
 
                 buttonContainer.addView(approveButton);

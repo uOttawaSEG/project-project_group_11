@@ -115,8 +115,8 @@ public class StudentSessionsFragment extends Fragment {
             LinearLayout buttonContainer = card.findViewById(R.id.item_session_buttonContainer);
 
             courseName.setText(session.getCourseName());
-            startTime.setText("Start: " + session.getStartDate().toString());
-            endTime.setText("End: " + session.getEndDate().toString());
+            startTime.setText("Start: " + session.getStartDate().toDate().toString());
+            endTime.setText("End: " + session.getEndDate().toDate().toString());
 
             statusBadge.setText(status.toUpperCase());
             if (status.equals("approved")) {
@@ -141,7 +141,7 @@ public class StudentSessionsFragment extends Fragment {
 
                 cancelButton.setOnClickListener(view -> {
                     session.setStatus("canceled");
-                    viewModel.updateSessionRequest(session, filterOption, new Date());
+                    viewModel.updateSessionRequest(session, filterOption, new Date(), studentId);
                 });
 
                 buttonContainer.addView(cancelButton);
@@ -149,7 +149,7 @@ public class StudentSessionsFragment extends Fragment {
 
             card.setOnClickListener(view -> {
                 Intent sessionIntent = new Intent(getContext(), StudentSessionDetailActivity.class);
-                sessionIntent.putExtra("session", session);
+                sessionIntent.putExtra("sessionID", session.getSessionID());
                 startActivity(sessionIntent);
             });
 
