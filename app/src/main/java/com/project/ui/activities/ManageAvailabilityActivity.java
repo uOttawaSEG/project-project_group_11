@@ -122,7 +122,7 @@ public class ManageAvailabilityActivity extends AppCompatActivity {
         availabilityViewModel.createAvailabilitySlot(tutorId, course, date, startTime, endTime, autoApprove);
     }
 
-    private boolean validateSlotForm(String date, String startTime, String endTime) {
+    public boolean validateSlotForm(String date, String startTime, String endTime) {
         boolean formValid = true;
 
         if (date.isEmpty()) {

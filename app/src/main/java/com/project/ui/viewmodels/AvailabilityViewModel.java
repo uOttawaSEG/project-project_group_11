@@ -161,7 +161,7 @@ public class AvailabilityViewModel extends ViewModel {
         postError("Error deleting slot");
     }
 
-    private boolean validateDate(String date) {
+    public boolean validateDate(String date) {
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
             sdf.setLenient(false);
@@ -177,7 +177,7 @@ public class AvailabilityViewModel extends ViewModel {
         }
     }
 
-    private boolean validateTimeFormat(String time) {
+    public boolean validateTimeFormat(String time) {
         String[] parts = time.split(":");
         if (parts.length != 2) return false;
 

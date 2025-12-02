@@ -57,7 +57,7 @@ public class LoginActivity extends AppCompatActivity {
         createAccountButton.setEnabled(value);
     }
 
-    private boolean validateLoginForm(String email, String password) {
+    public boolean validateLoginForm(String email, String password) {
         if (email.isEmpty()) {
             emailField.setError("Email is required");
             return false;
