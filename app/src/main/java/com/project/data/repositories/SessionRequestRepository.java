@@ -50,4 +50,42 @@ public class SessionRequestRepository {
                    Log.e(TAG, error.toString());
                 });
     }
+
+    public Task<QuerySnapshot> getSessionsByStudentID(String studentID) {
+        return repo.whereEqualTo("studentID", studentID).get();
+    }
+
+    public Task<QuerySnapshot> getUpcomingStudentSessions(String studentID, Date date) {
+        return repo
+                .whereEqualTo("studentID", studentID)
+                .whereEqualTo("status", "approved")
+                .whereGreaterThan("startDate", date)
+                .get();
+    }
+
+    public Task<QuerySnapshot> getPastStudentSessions(String studentID, Date date) {
+        return repo
+                .whereEqualTo("studentID", studentID)
+                .whereEqualTo("status", "approved")
+                .whereLessThan("endDate", date)
+                .get();
+    }
+
+    public Task<QuerySnapshot> getPendingStudentSessions(String studentID) {
+        return repo
+                .whereEqualTo("studentID", studentID)
+                .whereEqualTo("status", "pending")
+                .get()
+                .addOnFailureListener(error -> {
+                    Log.e(TAG, error.toString());
+                });
+    }
+
+    public boolean canCancelSession(SessionRequest session) {
+        if (session == null || session.getStartDate() == null) {
+            return false;
+        }
+        long timeUntilStart = session.getStartDate().getTime() - System.currentTimeMillis();
+        return timeUntilStart > 24 * 60 * 60 * 1000;
+    }
 }
