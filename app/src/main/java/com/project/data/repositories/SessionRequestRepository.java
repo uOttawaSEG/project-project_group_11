@@ -81,6 +81,10 @@ public class SessionRequestRepository {
                 });
     }
 
+    public Task<QuerySnapshot> getSessionsBySlotID(String slotID) {
+        return repo.whereEqualTo("slotID", slotID).get();
+    }
+
     public boolean canCancelSession(SessionRequest session) {
         if (session == null || session.getStartDate() == null) {
             return false;

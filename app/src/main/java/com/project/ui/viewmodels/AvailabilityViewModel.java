@@ -9,7 +9,9 @@ import androidx.lifecycle.ViewModel;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.project.data.model.AvailabilitySlot;
+import com.project.data.model.SessionRequest;
 import com.project.data.repositories.AvailabilitySlotRepository;
+import com.project.data.repositories.SessionRequestRepository;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -22,6 +24,7 @@ public class AvailabilityViewModel extends ViewModel {
 
     // database stuff
     private final AvailabilitySlotRepository repository = new AvailabilitySlotRepository();
+    private final SessionRequestRepository sessionRequestRepository = new SessionRequestRepository();
 
     // observable data
     private final MutableLiveData<List<AvailabilitySlot>> availabilitySlots = new MutableLiveData<>();
@@ -73,8 +76,26 @@ public class AvailabilityViewModel extends ViewModel {
     }
 
     public void deleteAvailabilitySlot(String slotId) {
-        repository.deleteSlot(slotId)
-                .addOnSuccessListener(this::onDeleteSlotSuccess)
+        sessionRequestRepository.getSessionsBySlotID(slotId)
+                .addOnSuccessListener(query -> {
+                    List<SessionRequest> sessions = query.toObjects(SessionRequest.class);
+                    boolean hasBookedSessions = false;
+
+                    for (SessionRequest session : sessions) {
+                        if (session.getStatus().equals("approved") || session.getStatus().equals("pending")) {
+                            hasBookedSessions = true;
+                            break;
+                        }
+                    }
+
+                    if (hasBookedSessions) {
+                        postError("Cannot delete slot with pending or approved sessions");
+                    } else {
+                        repository.deleteSlot(slotId)
+                                .addOnSuccessListener(this::onDeleteSlotSuccess)
+                                .addOnFailureListener(this::onDeleteSlotFailure);
+                    }
+                })
                 .addOnFailureListener(this::onDeleteSlotFailure);
     }
 
