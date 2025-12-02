@@ -4,30 +4,36 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/settings_background"
+    android:background="@drawable/card_background"
     android:clickable="true"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:layout_marginBottom="12dp"
+    android:elevation="2dp">
 
     <TextView
         android:id="@+id/item_session_courseName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
-        android:textSize="16sp" />
+        android:layout_marginBottom="8dp"
+        android:textSize="16sp"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/item_session_startTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="4dp"
-        android:textSize="16sp" />
+        android:textSize="14sp"
+        android:textColor="#616161" />
 
     <TextView
         android:id="@+id/item_session_endTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
-        android:textSize="16sp" />
+        android:layout_marginBottom="12dp"
+        android:textSize="14sp"
+        android:textColor="#616161" />
 
     <LinearLayout
         android:id="@+id/item_session_buttonContainer"

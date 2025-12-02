@@ -5,15 +5,19 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 
+import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.project.R;
+import com.project.data.model.Tutor;
 import com.project.data.model.User;
-
-import android.widget.LinearLayout;
+import com.project.ui.fragments.AvailabilityFragment;
+import com.project.ui.fragments.SessionsFragment;
 
 public class HomepageActivity extends AppCompatActivity {
     @Override
@@ -70,25 +74,7 @@ public class HomepageActivity extends AppCompatActivity {
         }
 
         if (user.getRole().equalsIgnoreCase("Tutor")) {
-            // button to go to the manage availability activity
-            Button manageAvailability = new Button(HomepageActivity.this);
-            manageAvailability.setText("Manage Availability");
-            manageAvailability.setOnClickListener(v -> {
-                Intent availabilityIntent = new Intent(HomepageActivity.this, ManageAvailabilityActivity.class);
-                availabilityIntent.putExtra("userInfo", user);
-                startActivity(availabilityIntent);
-            });
-            settingsPanel.addView(manageAvailability);
-
-            // button to go to the upcoming sessions activity
-            Button upcomingSessions = new Button(HomepageActivity.this);
-            upcomingSessions.setText("Manage Sessions");
-            upcomingSessions.setOnClickListener(view -> {
-                Intent upcomingSessionsIntent = new Intent(HomepageActivity.this, ManageSessionActivity.class);
-                upcomingSessionsIntent.putExtra("userInfo", user);
-                startActivity(upcomingSessionsIntent);
-            });
-            settingsPanel.addView(upcomingSessions);
+            setupTutorTabs((Tutor) user);
         }
 
         Button logout = new Button(HomepageActivity.this);
@@ -114,6 +100,47 @@ public class HomepageActivity extends AppCompatActivity {
         inboxButton.setOnClickListener(v -> {
             Intent inboxIntent = new Intent(HomepageActivity.this, InboxActivity.class);
             startActivity(inboxIntent);
+        });
+    }
+
+    private void setupTutorTabs(Tutor tutor) {
+        LinearLayout tutorContentLayout = findViewById(R.id.tutorContentLayout);
+        TabLayout tutorTabLayout = findViewById(R.id.tutorTabLayout);
+
+        tutorContentLayout.setVisibility(View.VISIBLE);
+
+        tutorTabLayout.addTab(tutorTabLayout.newTab().setText("Manage Availability"));
+        tutorTabLayout.addTab(tutorTabLayout.newTab().setText("Manage Sessions"));
+
+        AvailabilityFragment availabilityFragment = AvailabilityFragment.newInstance(tutor);
+        SessionsFragment sessionsFragment = SessionsFragment.newInstance(tutor);
+
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragmentContainer, availabilityFragment)
+                .commit();
+
+        tutorTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                Fragment selectedFragment;
+                if (tab.getPosition() == 0) {
+                    selectedFragment = availabilityFragment;
+                } else {
+                    selectedFragment = sessionsFragment;
+                    sessionsFragment.refreshSessions();
+                }
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragmentContainer, selectedFragment)
+                        .commit();
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+            }
         });
     }
 }
